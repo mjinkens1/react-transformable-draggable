@@ -1,0 +1,95 @@
+$resize-container-border-color: red;
+$resize-container-cursor-color: red;
+$resize-handle-size: 10px;
+
+.resize-container-wrapper {
+    position: absolute;
+}
+
+.resize-container {
+    position: absolute;
+    border: 2px solid $resize-container-border-color;
+    box-sizing: border-box;
+    object-fit: contain;
+}
+
+.resize-container-rotate {
+    position: absolute;
+    margin-left: -10px;
+    font-size: 20px;
+    color: $resize-container-cursor-color;
+    cursor: pointer;
+}
+
+.resize-container-child-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.resize-handle {
+    position: absolute;
+    width: $resize-handle-size;
+    height: $resize-handle-size;
+    background-color: $resize-container-cursor-color;
+    z-index: 10;
+
+    &--top-left {
+        @extend .resize-handle;
+        top: 0;
+        left: 0;
+        cursor: nw-resize;
+    }
+
+    &--top-center {
+        @extend .resize-handle;
+        top: 0;
+        left: calc(50% - #{$resize-handle-size / 2});
+        cursor: ns-resize;
+    }
+
+    &--top-right {
+        @extend .resize-handle;
+        top: 0;
+        right: 0;
+        cursor: ne-resize;
+    }
+
+    &--right {
+        @extend .resize-handle;
+        top: calc(50% - #{$resize-handle-size / 2});
+        right: 0;
+        cursor: ew-resize;
+    }
+
+    &--bottom-right {
+        @extend .resize-handle;
+        bottom: 0;
+        right: 0;
+        cursor: se-resize;
+    }
+
+    &--bottom-center {
+        @extend .resize-handle;
+        bottom: 0;
+        left: calc(50% - #{$resize-handle-size / 2});
+        cursor: ns-resize;
+    }
+
+    &--bottom-left {
+        @extend .resize-handle;
+        bottom: 0;
+        left: 0;
+        cursor: sw-resize;
+    }
+
+    &--left {
+        @extend .resize-handle;
+        top: calc(50% - #{$resize-handle-size / 2});
+        left: 0;
+        cursor: ew-resize;
+    }
+}
