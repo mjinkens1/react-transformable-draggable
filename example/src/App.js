@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 
+import { DndProvider } from './components/dndProvider/DndProvider'
 import { TransformableDraggable } from './components/transformableDraggable/TransformableDraggable'
 import { DropTarget } from './components/dropTarget/DropTarget'
 
@@ -16,19 +17,22 @@ const App = () => {
     return (
         <div className="App">
             <header className="App-header">
-                <DropTarget ref={providerRef} setDragUpdate={setDragUpdate}>
-                    <TransformableDraggable
-                        id="sdfsdfas"
-                        dragUpdate={dragUpdate}
-                        // initialPosition={{ top: 100, left: 100 }}
-                        providerRef={providerRef}
-                        setDragUpdate={setDragUpdate}
-                    >
-                        <img src={logo} className="App-logo" alt="logo" />
-                    </TransformableDraggable>
-                </DropTarget>
-
-                <p>Drag and resize the icon.</p>
+                <DndProvider>
+                    <DropTarget ref={providerRef} setDragUpdate={setDragUpdate}>
+                        <TransformableDraggable
+                            id="sdfsdfas"
+                            dragUpdate={dragUpdate}
+                            initialPosition={{ top: 100, left: 100 }}
+                            // lockAspectRatio
+                            minWidth={300}
+                            providerRef={providerRef}
+                            setDragUpdate={setDragUpdate}
+                        >
+                            <img src={logo} className="App-logo" alt="logo" />
+                        </TransformableDraggable>
+                    </DropTarget>
+                </DndProvider>
+                <p>Drag, rotate, and resize the icon.</p>
             </header>
         </div>
     )

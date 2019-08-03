@@ -37,7 +37,15 @@ export const TransformableDraggable = ({
     id,
     initialPosition,
     lockAspectRatio,
+    maxWidth,
+    maxHeight,
+    minWidth,
+    minHeight,
     providerRef,
+    resizeHandleStyle,
+    resizeHandleStyleMobile,
+    rotateHandleStyle,
+    rotateHandleStyleMobile,
     setDragUpdate,
 }) => {
     const [aspectRatio, setAspectRatio] = useState(INITIAL_ASPECT_RATIO)
@@ -55,6 +63,26 @@ export const TransformableDraggable = ({
     const containerRef = useRef()
     const childRef = useRef()
 
+    const { width: initialWidth, height: initialHeight } = initialDimensions
+    const { width, height, ...resizeBounds } = resizeDimensions
+
+    const scaleX = width / initialWidth
+    const scaleY = height / initialHeight
+    const rotateTransform = `rotateZ(${rotation}deg)`
+    const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
+
+    const minMax = {
+        minWidth,
+        minHeight: lockAspectRatio ? minWidth / aspectRatio : minHeight,
+        maxWidth,
+        maxHeight,
+    }
+    const minSize = { minWidth, minHeight }
+
+    const childTransform = lockAspectRatio
+        ? `scale(${Math.min(height / minHeight, width / minWidth)})`
+        : `scale(${scaleX}, ${scaleY})`
+
     const [{ isDragging }, drag, preview] = useDrag({
         item: {
             id,
@@ -63,6 +91,8 @@ export const TransformableDraggable = ({
             resizeDimensions,
             initialDimensions,
             rotation,
+            lockAspectRatio,
+            ...minMax,
         },
         canDrag: !isResizing && !isRotating,
         collect: monitor => ({
@@ -78,8 +108,8 @@ export const TransformableDraggable = ({
         React.Children.only(children)
 
         const childDimensions = {
-            width: childRef.current.clientWidth,
-            height: childRef.current.clientHeight,
+            width: Math.max(childRef.current.clientWidth, minWidth),
+            height: Math.max(childRef.current.clientHeight, minHeight),
         }
 
         const { top, left } = containerRef.current.getBoundingClientRect()
@@ -99,7 +129,7 @@ export const TransformableDraggable = ({
 
             setInitialized(true)
         }
-    }, [children, dragLayerBounds, dragLayerParams, initialized, providerRef])
+    }, [children, dragLayerBounds, dragLayerParams, initialized, minHeight, minWidth, providerRef])
 
     useEffect(() => {
         if (dragUpdate) {
@@ -115,20 +145,6 @@ export const TransformableDraggable = ({
         }
     }, [id, dragUpdate, wrapperParams, setDragUpdate])
 
-    const { width: initialWidth, height: initialHeight } = initialDimensions
-    const { width, height, ...resizeBounds } = resizeDimensions
-    const { top } = wrapperParams
-
-    const scaleX = width / initialWidth
-    const scaleY = height / initialHeight
-
-    const rotateTransform = `rotateZ(${rotation}deg)`
-    const childTransform = `scale(${scaleX}, ${scaleY})`
-
-    const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
-
-    console.log('RESIZE DIMS', resizeDimensions)
-
     return (
         <div
             ref={drag}
@@ -143,14 +159,23 @@ export const TransformableDraggable = ({
             <div
                 ref={containerRef}
                 className="resize-container"
-                style={{ ...resizeBounds, ...dragLayerBounds }}
+                style={{
+                    ...resizeBounds,
+                    ...dragLayerBounds,
+                    ...minMax,
+                }}
             >
                 <RotateHandle
                     containerRef={containerRef}
-                    containerTop={top}
+                    containerPosition={wrapperParams}
+                    isResizing={isResizing}
+                    isRotating={isRotating}
                     providerRef={providerRef}
+                    rotation={rotation}
                     setIsRotating={setIsRotating}
                     setRotation={setRotation}
+                    style={rotateHandleStyle}
+                    styleMobile={rotateHandleStyleMobile}
                 />
                 {cursors.map(cursorPosition => {
                     const resizeFunction = utils.getResizeFunction(cursorPosition, lockAspectRatio)
@@ -158,8 +183,9 @@ export const TransformableDraggable = ({
                     return (
                         <ResizeHandle
                             key={cursorPosition}
-                            aspectRatio={aspectRatio}
                             containerRef={containerRef}
+                            isResizing={isResizing}
+                            minSize={minSize}
                             position={cursorPosition}
                             providerRef={providerRef}
                             resizeDimensions={resizeDimensions}
@@ -168,6 +194,9 @@ export const TransformableDraggable = ({
                             setIsResizing={setIsResizing}
                             setResizeDimensions={setResizeDimensions}
                             setWrapperParams={setWrapperParams}
+                            style={resizeHandleStyle}
+                            styleMobile={resizeHandleStyleMobile}
+                            wrapperParams={wrapperParams}
                         />
                     )
                 })}
@@ -184,6 +213,9 @@ export const TransformableDraggable = ({
 }
 
 TransformableDraggable.defaultProps = {
+    aspectRatio: 1,
     initialPosition: { top: 0, left: 0 },
     lockAspectRatio: false,
+    minWidth: 70,
+    minHeight: 70,
 }
