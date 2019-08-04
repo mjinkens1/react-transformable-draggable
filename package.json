@@ -3,6 +3,9 @@
     "description": "A set of component wrappers to make any component or element draggable, droppable, and transformable.",
     "version": "0.1.35",
     "license": "MIT",
+    "publishConfig": {
+        "access": "restricted"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/mjinkens1/react-transformable-draggable"
@@ -11,17 +14,16 @@
     "scripts": {
         "build": "webpack --mode production",
         "build-dev": "webpack --mode development",
-        "publish-lib": "webpack --mode production && npm version patch && npm publish"
+        "prepublish": "rm -rf ./lib && npm run build",
+        "publish-lib": "npm run prepublish && webpack --mode production && npm version patch && npm publish"
     },
     "dependencies": {
         "lodash-uuid": "0.0.3",
         "lodash.throttle": "^4.1.1",
         "node-sass": "^4.12.0",
-        "react": "^16.8.6",
         "react-dnd": "^9.3.2",
         "react-dnd-html5-backend": "^9.3.2",
         "react-dnd-touch-backend": "^9.3.3",
-        "react-dom": "^16.8.6",
         "react-fast-compare": "^2.0.4"
     },
     "devDependencies": {
@@ -31,11 +33,17 @@
         "babel-loader": "^8.0.5",
         "css-loader": "^3.1.0",
         "glob": "^7.1.4",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
         "sass-loader": "^7.1.0",
         "style-loader": "^0.23.1",
         "webpack": "^4.39.1",
         "webpack-cli": "^3.3.6",
         "webpack-node-externals": "^1.7.2"
+    },
+    "peerDependencies": {
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6"
     },
     "browserslist": {
         "production": [

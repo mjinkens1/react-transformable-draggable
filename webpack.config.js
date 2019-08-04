@@ -10,7 +10,10 @@ module.exports = {
     output: {
         path: path.resolve('lib'),
         filename: 'index.js',
-        libraryTarget: 'commonjs',
+        library: 'react-transformable-draggable',
+        libraryTarget: 'umd',
+        publicPath: '/lib/',
+        umdNamedDefine: true,
     },
     module: {
         rules: [
@@ -28,6 +31,20 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'sass-loader'],
             },
         ],
+    },
+    externals: {
+        react: {
+            commonjs: 'react',
+            commonjs2: 'react',
+            amd: 'React',
+            root: 'React',
+        },
+        'react-dom': {
+            commonjs: 'react-dom',
+            commonjs2: 'react-dom',
+            amd: 'ReactDOM',
+            root: 'ReactDOM',
+        },
     },
     resolve: {
         extensions: ['.js'],

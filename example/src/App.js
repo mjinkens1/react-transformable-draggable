@@ -1,6 +1,6 @@
 import React, { useState } from '../../node_modules/react'
 import _ from 'lodash-uuid'
-.import {
+import {
     DndProvider,
     Droppable,
     Transformable,
