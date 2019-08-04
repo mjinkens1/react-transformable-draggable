@@ -1,41 +1,69 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
+import _ from 'lodash-uuid'
 
 import { DndProvider } from './components/dndProvider/DndProvider'
-import { TransformableDraggable } from './components/transformableDraggable/TransformableDraggable'
-import { DropTarget } from './components/dropTarget/DropTarget'
-
-// import  {DropTarget, TransformableDraggable} from 'react-transformable-draggable'
+import { Transformable } from './components/transformable/Transformable'
+import { TransformableTarget } from './components/transformableTarget/TransformableTarget'
+import { Droppable } from './components/droppable/Droppable'
 
 import logo from './logo.svg'
 import './App.css'
 
-const App = () => {
-    const [dragUpdate, setDragUpdate] = useState(null)
+const renderItem = {
+    renderItem: (
+        <div className="app-render-item">
+            CLICK ME
+            <img src={logo} className="app-logo" alt="logo" />
+            TO ADD
+        </div>
+    ),
+}
 
-    const providerRef = useRef()
+const transformableTargetStyle = {
+    position: 'relative',
+    flexGrow: 1,
+    width: '85vw',
+    height: '70vh',
+    backgroundColor: 'cadetblue',
+    overflow: 'hidden',
+}
+
+export const App = () => {
+    const [renderItems, setRenderItems] = useState([])
 
     return (
-        <div className="App">
-            <header className="App-header">
+        <div className="app">
+            <header className="app-header">
                 <DndProvider>
-                    <DropTarget ref={providerRef} setDragUpdate={setDragUpdate}>
-                        <TransformableDraggable
-                            id="sdfsdfas"
-                            dragUpdate={dragUpdate}
-                            initialPosition={{ top: 100, left: 100 }}
-                            // lockAspectRatio
-                            minWidth={300}
-                            providerRef={providerRef}
-                            setDragUpdate={setDragUpdate}
+                    <TransformableTarget style={transformableTargetStyle}>
+                        {renderItems.map(({ id, renderItem }) => (
+                            <Transformable key={id} id={id}>
+                                {renderItem}
+                            </Transformable>
+                        ))}
+                    </TransformableTarget>
+                    <div className="app-add-items">
+                        <Droppable>
+                            <div className="app-render-item">
+                                DRAG ME
+                                <img src={logo} className="app-logo" alt="logo" />
+                                TO ADD
+                            </div>
+                        </Droppable>
+                        <div
+                            onClick={() =>
+                                setRenderItems([...renderItems, { ...renderItem, id: _.uuid() }])
+                            }
                         >
-                            <img src={logo} className="App-logo" alt="logo" />
-                        </TransformableDraggable>
-                    </DropTarget>
+                            <div className="app-render-item">
+                                CLICK ME
+                                <img src={logo} className="app-logo" alt="logo" />
+                                TO ADD
+                            </div>
+                        </div>
+                    </div>
                 </DndProvider>
-                <p>Drag, rotate, and resize the icon.</p>
             </header>
         </div>
     )
 }
-
-export default App

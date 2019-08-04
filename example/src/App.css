@@ -1,15 +1,31 @@
-.App {
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+        'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
     text-align: center;
 }
 
-.App-logo {
+.app-logo {
     width: auto;
-    height: 200px;
+    height: 60%;
     pointer-events: none;
     user-select: none;
 }
 
-.App-header {
+.app-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -20,6 +36,24 @@
     color: white;
 }
 
-.App-link {
-    color: #61dafb;
+.app-render-item {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 200px;
+    padding: 30px;
+    background-color: #282c34;
+    white-space: nowrap;
+}
+
+.app-add-items {
+    display: flex;
+    justify-content: space-around;
+}
+
+@media screen and (max-width: 991px) {
+    .app-render-item {
+        width: 100px;
+        height: 100px;
+    }
 }
