@@ -1,7 +1,7 @@
 {
     "name": "react-transformable-draggable",
     "description": "A set of component wrappers to make any component or element draggable, droppable, and transformable.",
-    "version": "0.1.34",
+    "version": "0.1.35",
     "license": "MIT",
     "repository": {
         "type": "git",
