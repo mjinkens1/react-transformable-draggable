@@ -210,7 +210,7 @@ const TransformableCore = ({
     const rotateTransform = `rotateZ(${rotation}deg)`
 
     const childTransform = lockAspectRatio
-        ? `scale(${Math.min(height / minHeight, width / minWidth)})`
+        ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
         : `scale(${scaleX}, ${scaleY})`
 
     const wrapperStyle = {

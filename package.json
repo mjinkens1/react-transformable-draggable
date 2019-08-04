@@ -10,7 +10,7 @@
     "main": "lib/index.js",
     "scripts": {
         "build": "webpack --mode production",
-        "build-dev": "webpack --mode development",
+        "build-dev": "rm -rf ./lib && webpack --mode development --watch",
         "prepublish": "rm -rf ./lib && npm run build",
         "publish-lib": "npm run prepublish && webpack --mode production && npm version patch && npm publish"
     },

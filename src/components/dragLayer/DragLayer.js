@@ -22,7 +22,7 @@ export const DragLayer = memo(({ children, id }) => {
         resizeDimensions: {},
         wrapperParams: {},
     })
-    
+
     const [currentOffsetDiff, setCurrentOffsetDiff] = useState({ x: 0, y: 0 })
 
     const { isDragging, item, itemType, offsetDiff } = useDragLayer(monitor => ({
@@ -63,7 +63,7 @@ export const DragLayer = memo(({ children, id }) => {
     const scaleY = height / initialHeight
 
     const childTransform = lockAspectRatio
-        ? `scale(${Math.min(height / minHeight, width / minWidth)})`
+        ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
         : `scale(${scaleX}, ${scaleY})`
 
     return (
