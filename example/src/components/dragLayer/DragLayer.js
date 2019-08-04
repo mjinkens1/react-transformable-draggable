@@ -22,7 +22,7 @@ export const DragLayer = memo(({ children, id }) => {
         resizeDimensions: {},
         wrapperParams: {},
     })
-
+    
     const [currentOffsetDiff, setCurrentOffsetDiff] = useState({ x: 0, y: 0 })
 
     const { isDragging, item, itemType, offsetDiff } = useDragLayer(monitor => ({
