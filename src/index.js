@@ -1,4 +1,4 @@
-import { DropTarget } from './components/dropTarget/DropTarget'
-import { TransformableDraggable } from './components/transformableDraggable/TransformableDraggable'
+import { TransformableTarget } from './components/TransformableTarget/TransformableTarget'
+import { Transformable } from './components/Transformable/Transformable'
 
-export { DropTarget, TransformableDraggable }
+export { TransformableTarget, Transformable }

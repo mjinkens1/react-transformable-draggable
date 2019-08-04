@@ -7,7 +7,7 @@ $resize-handle-size-mobile: 20px;
     position: absolute;
     min-width: 30px;
     min-height: 30px;
-    background: red;
+    cursor: default;
 }
 
 .resize-container {
@@ -23,6 +23,7 @@ $resize-handle-size-mobile: 20px;
     font-size: 20px;
     color: $resize-container-cursor-color;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 
     &--resizing {
         cursor: default;
@@ -30,6 +31,8 @@ $resize-handle-size-mobile: 20px;
 }
 
 .resize-container-child-wrapper {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,14 +43,14 @@ $resize-handle-size-mobile: 20px;
 
 .resize-handle {
     position: absolute;
+    z-index: 100;
     width: $resize-handle-size;
     height: $resize-handle-size;
     background-color: $resize-container-cursor-color;
     opacity: 0.5;
     z-index: 10;
-    // cursor: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEwLDhINkwxMiwyTDE4LDhIMTRWMTZIMThMMTIsMjJMNiwxNkgxMFY4WiIgLz48L3N2Zz4='),
-    //     pointer;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
         opacity: 1;

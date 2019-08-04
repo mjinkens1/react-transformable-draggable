@@ -1,0 +1,9 @@
+.droppable-container {
+    position: relative;
+}
+
+.droppable-preview-container {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+}

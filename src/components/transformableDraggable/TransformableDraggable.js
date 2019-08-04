@@ -28,7 +28,7 @@ const cursorPositions = [
 
 const cursorPositionsAspectLocked = ['top-left', 'top-right', 'bottom-right', 'bottom-left']
 
-export const TransformableDraggable = ({
+export const Transformable = ({
     children,
     dragUpdate,
     dragLayerBounds,
@@ -212,7 +212,7 @@ export const TransformableDraggable = ({
     )
 }
 
-TransformableDraggable.defaultProps = {
+Transformable.defaultProps = {
     aspectRatio: 1,
     initialPosition: { top: 0, left: 0 },
     lockAspectRatio: false,

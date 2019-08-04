@@ -4,27 +4,29 @@ import { DragLayer } from '../dragLayer/DragLayer'
 
 import './styles.scss'
 
-export const DropTarget = React.forwardRef(({ children, consumerRef, setDragUpdate }, ref) => {
-    const [{ id }, drop] = useDrop({
-        accept: ['TRANSFORMABLE_DRAGGABLE'],
-        collect: monitor => ({ ...monitor.getItem() }),
-        drop: ({ id }, monitor) => {
-            const update = { ...monitor.getDifferenceFromInitialOffset(), id }
+export const TransformableTarget = React.forwardRef(
+    ({ children, consumerRef, setDragUpdate }, ref) => {
+        const [{ id }, drop] = useDrop({
+            accept: ['TRANSFORMABLE_DRAGGABLE'],
+            collect: monitor => ({ ...monitor.getItem() }),
+            drop: ({ id }, monitor) => {
+                const update = { ...monitor.getDifferenceFromInitialOffset(), id }
 
-            setDragUpdate(update)
-        },
-    })
+                setDragUpdate(update)
+            },
+        })
 
-    return (
-        <div ref={drop}>
-            <div ref={ref} className="drop-target">
-                {React.Children.map(children, child => (
-                    <DragLayer id={id} currentId={child.props.id}>
-                        {child}
-                    </DragLayer>
-                ))}
-                {children}
+        return (
+            <div ref={drop}>
+                <div ref={ref} className="drop-target">
+                    {React.Children.map(children, child => (
+                        <DragLayer id={id} currentId={child.props.id}>
+                            {child}
+                        </DragLayer>
+                    ))}
+                    {children}
+                </div>
             </div>
-        </div>
-    )
-})
+        )
+    }
+)
