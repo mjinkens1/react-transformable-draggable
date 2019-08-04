@@ -9,6 +9,13 @@
 # testing
 /coverage
 
+<<<<<<< HEAD
+=======
+# local
+/example/src/components
+/example/src/utils
+
+>>>>>>> 1bf76e9c7cc4d34e5c80d79fe65670b6d43531e3
 # production
 /lib
 
