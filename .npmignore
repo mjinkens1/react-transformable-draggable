@@ -1,0 +1,9 @@
+/node_modules
+/example
+/src
+.babelrc
+.gitignore
+.npmignore
+.prettierrc
+package-lock.json
+webpack.config.js

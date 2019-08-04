@@ -11,7 +11,7 @@
     "scripts": {
         "build": "webpack --mode production",
         "build-dev": "webpack --mode development",
-        "publish": "webpack --mode production && npm version patch && npm publish"
+        "publish-lib": "webpack --mode production && npm version patch && npm publish"
     },
     "dependencies": {
         "lodash-uuid": "0.0.3",
