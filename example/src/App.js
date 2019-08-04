@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import _ from 'lodash-uuid'
-import {
-    DndProvider,
-    Droppable,
-    Transformable,
-    TransformableTarget,
-} from 'react-transformable-draggable'
+// import { DndProvider, Droppable, TransformableTarget } from 'react-transformable-draggable'
+
+import { DndProvider } from './components/dndProvider/DndProvider'
+import { Droppable } from './components/droppable/Droppable'
+import { TransformableTarget } from './components/transformableTarget/TransformableTarget'
+import { Transformable } from './components/transformable/Transformable'
 
 import logo from './logo.svg'
 import './App.css'
