@@ -10,7 +10,8 @@
 /coverage
 
 # local
-/example/src
+/example/src/components
+/example/src/utils
 
 # production
 /lib
