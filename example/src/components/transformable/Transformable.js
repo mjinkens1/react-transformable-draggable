@@ -148,7 +148,6 @@ const TransformableCore = ({
                 setZIndex(nextZindex)
             }
 
-            setCurrentDragSource({ dragSourceId: id })
             setInitialized(true)
         }
     }, [

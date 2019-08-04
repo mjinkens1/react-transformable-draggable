@@ -15,7 +15,7 @@ const getItemStyles = differenceFromInitialOffset => {
 }
 
 export const DroppablePreview = ({ children }) => {
-    const { differenceFromInitialOffset, isDragging, item, itemType } = useDragLayer(monitor => ({
+    const { differenceFromInitialOffset, isDragging, itemType } = useDragLayer(monitor => ({
         differenceFromInitialOffset: monitor.getDifferenceFromInitialOffset(),
         isDragging: monitor.isDragging(),
         item: monitor.getItem(),

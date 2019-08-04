@@ -47,6 +47,8 @@ export const TransformableTarget = React.forwardRef(({ children, consumerRef, st
                     left: dropPageX - width / 2 - left,
                 }
 
+                setCurrentDragSource({ dragSourceId: id })
+
                 setChildTransformables({
                     ...childTransformables,
                     [id]: { renderItem: children, initialPosition, ...props },
