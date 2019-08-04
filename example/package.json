@@ -5,23 +5,19 @@
     "dependencies": {
         "lodash-uuid": "0.0.3",
         "node-sass": "^4.12.0",
-        "react": "^16.8.6",
+        "react": "file:../node_modules/react-dom",
         "react-dnd": "^9.3.2",
         "react-dnd-html5-backend": "^9.3.2",
         "react-dnd-touch-backend": "^9.3.3",
-        "react-dom": "^16.8.6",
+        "react-dom": "file:../node_modules/react-dom",
         "react-fast-compare": "^2.0.4",
-        "react-scripts": "3.0.1",
-        "react-transformable-draggable": "file:../"
+        "react-scripts": "3.0.1"
     },
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
-    },
-    "eslintConfig": {
-        "extends": "react-app"
     },
     "browserslist": {
         "production": [

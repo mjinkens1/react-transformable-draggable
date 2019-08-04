@@ -1,4 +1,6 @@
-import { TransformableTarget } from './components/TransformableTarget/TransformableTarget'
-import { Transformable } from './components/Transformable/Transformable'
+import { DndProvider } from './components/dndProvider/DndProvider'
+import { Droppable } from './components/droppable/Droppable'
+import { Transformable } from './components/transformable/Transformable'
+import { TransformableTarget } from './components/transformableTarget/TransformableTarget'
 
-export { TransformableTarget, Transformable }
+export { Droppable, DndProvider, Transformable, TransformableTarget }

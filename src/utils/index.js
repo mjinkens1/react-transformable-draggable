@@ -1,3 +1,5 @@
+import isEqual from 'react-fast-compare'
+
 export const utils = {
     getAngleAdjustedDimensions: (angledWidth, angledHeight, angle) => {
         const angleRad = (() => {
@@ -6,7 +8,6 @@ export const utils = {
             } else if (angle > 90 && angle < 180) {
                 return ((180 - angle) * Math.PI) / 180
             } else if (angle >= 180 && angle < 270) {
-                // TODO: Figure out why 3rd quadrant width/height are reversed
                 return (angle * Math.PI) / 180
             } else if (angle >= 270 && angle <= 360) {
                 return (-1 * angle * Math.PI) / 180
@@ -37,14 +38,14 @@ export const utils = {
             case 'top-left':
                 return (offsetX, offsetY, width, height, containerRef, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minSize } = options
-                    const { minWidth, minHeight } = minSize
+                    const { aspectRatio, lockAspectRatio, minWidth, minHeight } = options
 
                     const maxOffsetX = width - minWidth
-                    const maxOffsetY =
-                        height > width
-                            ? Math.min(height - minHeight, height - width / 1.5)
+                    const maxOffsetY = lockAspectRatio
+                        ? height > width
+                            ? Math.min(height - minHeight, height - width / aspectRatio)
                             : height - minHeight
+                        : height - minHeight
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
 
@@ -59,13 +60,13 @@ export const utils = {
             case 'top-right':
                 return (offsetX, offsetY, width, height, containerRef, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minSize } = options
-                    const { minHeight } = minSize
+                    const { aspectRatio, lockAspectRatio, minHeight } = options
 
-                    const maxOffsetY =
-                        height > width
-                            ? Math.min(height - minHeight, height - width / 1.5)
+                    const maxOffsetY = lockAspectRatio
+                        ? height > width
+                            ? Math.min(height - minHeight, height - width / aspectRatio)
                             : height - minHeight
+                        : height - minHeight
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
 
                     return {
@@ -87,8 +88,7 @@ export const utils = {
             case 'bottom-left':
                 return (offsetX, offsetY, width, height, containerRef, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minSize } = options
-                    const { minWidth } = minSize
+                    const { minWidth } = options
 
                     const maxOffsetX = width - minWidth
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
@@ -103,8 +103,7 @@ export const utils = {
             case 'top-center':
                 return (offsetX, offsetY, width, height, containerRef, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minSize } = options
-                    const { minHeight } = minSize
+                    const { minHeight } = options
 
                     const maxOffsetY = height - minHeight
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
@@ -136,8 +135,7 @@ export const utils = {
             case 'left':
                 return (offsetX, offsetY, width, height, containerRef, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minSize } = options
-                    const { minWidth } = minSize
+                    const { minWidth } = options
 
                     const maxOffsetX = width - minWidth
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
@@ -178,6 +176,71 @@ export const utils = {
             return (3 * Math.PI) / 2 + angle - positionOffset
         }
     },
+    getPositionFromString: (positionString, providerRef, childDimensions) => {
+        const { width, height } = providerRef.current.getBoundingClientRect()
+        const { width: containerWidth, height: containerHeight } = childDimensions
+
+        switch (positionString) {
+            case 'top-left':
+                return {
+                    top: 0,
+                    left: 0,
+                }
+
+            case 'top-center':
+                return {
+                    top: 0,
+                    left: width / 2 - containerWidth / 2,
+                }
+
+            case 'top-right':
+                return {
+                    top: 0,
+                    left: width - containerWidth,
+                }
+
+            case 'right':
+                return {
+                    top: height / 2 - containerHeight / 2,
+                    left: width - containerWidth,
+                }
+
+            case 'bottom-right':
+                return {
+                    top: height - containerHeight,
+                    left: width - containerWidth,
+                }
+
+            case 'bottom-center':
+                return {
+                    top: height - containerHeight,
+                    left: width / 2 - containerWidth / 2,
+                }
+
+            case 'bottom-left':
+                return {
+                    top: height - containerHeight,
+                    left: 0,
+                }
+            case 'left':
+                return {
+                    top: height / 2 - containerHeight / 2,
+                    left: 0,
+                }
+            case 'center':
+                return {
+                    top: height / 2 - containerHeight / 2,
+                    left: width / 2 - containerWidth / 2,
+                }
+
+            default:
+                return {
+                    top: height / 2 - containerHeight / 2,
+                    left: width / 2 - containerWidth / 2,
+                }
+        }
+    },
+    isEqual: (a, b) => isEqual(a, b),
     isMobile: () =>
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
 }

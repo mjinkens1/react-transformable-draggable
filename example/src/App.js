@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState } from '../../node_modules/react'
 import _ from 'lodash-uuid'
-
-import { DndProvider } from './components/dndProvider/DndProvider'
-import { Transformable } from './components/transformable/Transformable'
-import { TransformableTarget } from './components/transformableTarget/TransformableTarget'
-import { Droppable } from './components/droppable/Droppable'
+.import {
+    DndProvider,
+    Droppable,
+    Transformable,
+    TransformableTarget,
+} from 'react-transformable-draggable'
 
 import logo from './logo.svg'
 import './App.css'
@@ -21,7 +22,6 @@ const renderItem = {
 
 const transformableTargetStyle = {
     position: 'relative',
-    flexGrow: 1,
     width: '85vw',
     height: '70vh',
     backgroundColor: 'cadetblue',

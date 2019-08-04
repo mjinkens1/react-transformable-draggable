@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useDragLayer } from 'react-dnd'
+import { utils } from '../../utils'
+import './styles.scss'
 
-const getItemStyles = offsetDiff => {
+const getItemStyles = (offsetDiff, setLastOffset) => {
     if (!offsetDiff) {
-        return {
-            display: 'none',
-        }
+        const transform = `translate(${0}px, ${0}px)`
+
+        return { transform, opacity: 0 }
     }
 
     const { x, y } = offsetDiff
@@ -14,14 +16,33 @@ const getItemStyles = offsetDiff => {
     return { transform }
 }
 
-export const DragLayer = ({ children, currentId, id }) => {
-    const { item, isDragging, offsetDiff } = useDragLayer(monitor => ({
-        offsetDiff: monitor.getDifferenceFromInitialOffset(),
+export const DragLayer = memo(({ children, id }) => {
+    const [dragItem, setDragItem] = useState({
+        initialDimensions: {},
+        resizeDimensions: {},
+        wrapperParams: {},
+    })
+    
+    const [currentOffsetDiff, setCurrentOffsetDiff] = useState({ x: 0, y: 0 })
+
+    const { isDragging, item, itemType, offsetDiff } = useDragLayer(monitor => ({
         isDragging: monitor.isDragging(),
         item: monitor.getItem(),
+        itemType: monitor.getItemType(),
+        offsetDiff: monitor.getDifferenceFromInitialOffset(),
     }))
 
-    if (!isDragging || id !== currentId) {
+    useEffect(() => {
+        if (item) {
+            setDragItem(item)
+        }
+
+        if (offsetDiff) {
+            setCurrentOffsetDiff(offsetDiff)
+        }
+    }, [item, offsetDiff])
+
+    if (!dragItem || itemType === 'DROPPABLE_WRAPPER') {
         return null
     }
 
@@ -33,7 +54,8 @@ export const DragLayer = ({ children, currentId, id }) => {
         resizeDimensions,
         rotation,
         wrapperParams,
-    } = item
+    } = dragItem
+
     const { width: initialWidth, height: initialHeight } = initialDimensions
     const { width, height, ...resizeBounds } = resizeDimensions
 
@@ -45,14 +67,16 @@ export const DragLayer = ({ children, currentId, id }) => {
         : `scale(${scaleX}, ${scaleY})`
 
     return (
-        <div style={getItemStyles(offsetDiff, item)}>
+        <div className="drag-layer-container" style={getItemStyles(currentOffsetDiff, item)}>
             {React.Children.map(children, child => {
                 return React.cloneElement(child, {
                     dragLayerParams: { ...wrapperParams, transform: `rotateZ(${rotation}deg)` },
                     dragLayerBounds: resizeBounds,
                     dragLayerChildTransform: childTransform,
+                    isDragLayer: true,
+                    dragLayerIsDragging: isDragging,
                 })
             })}
         </div>
     )
-}
+}, utils.isEqual)
