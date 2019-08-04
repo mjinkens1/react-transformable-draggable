@@ -9,6 +9,10 @@
 # testing
 /coverage
 
+# local
+/example/src/components
+/example/src/utils
+
 # production
 /lib
 
