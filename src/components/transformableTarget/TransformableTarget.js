@@ -88,7 +88,10 @@ export const TransformableTarget = React.forwardRef(
         useEffect(() => {
             // Prevent resize events from bubbling to the out of draggable area and causing scroll while resizing
             const listenerCallback = event => {
-                if (event.target.classList.contains('resize-handle--selected')) {
+                if (
+                    event.target.classList.contains('resize-handle--selected') ||
+                    event.target.id === 'react-transormable-draggable-rotate-handle'
+                ) {
                     event.stopImmediatePropagation()
                     isMobile && event.preventDefault()
                 }
