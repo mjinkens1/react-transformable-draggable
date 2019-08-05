@@ -41,6 +41,8 @@ const TransformableCore = ({
     isDragLayer,
 }) => {
     const {
+        hideBoundingBox,
+        hideHandles,
         initialPosition,
         lockAspectRatio,
         maxHeight,
@@ -231,6 +233,7 @@ const TransformableCore = ({
         minHeight: getMinHeight(),
         maxWidth,
         maxHeight,
+        border: hideBoundingBox ? 'none' : null,
     }
 
     const childContainerStyle = { transform: dragLayerChildTransform || childTransform }
@@ -238,37 +241,41 @@ const TransformableCore = ({
     return (
         <div ref={drag} className="resize-container-wrapper" style={wrapperStyle}>
             <div ref={containerRef} className="resize-container" style={containerStyle}>
-                <RotateHandle
-                    clickCallback={clickCallback}
-                    containerRef={containerRef}
-                    containerPosition={wrapperParams}
-                    isResizing={isResizing}
-                    isRotating={isRotating}
-                    providerRef={providerRef}
-                    rotation={rotation}
-                    setIsRotating={setIsRotating}
-                    setRotation={setRotation}
-                />
+                {!hideHandles && (
+                    <RotateHandle
+                        clickCallback={clickCallback}
+                        containerRef={containerRef}
+                        containerPosition={wrapperParams}
+                        isResizing={isResizing}
+                        isRotating={isRotating}
+                        providerRef={providerRef}
+                        rotation={rotation}
+                        setIsRotating={setIsRotating}
+                        setRotation={setRotation}
+                    />
+                )}
                 {cursors.map(cursorPosition => {
                     const resizeFunction = utils.getResizeFunction(cursorPosition, lockAspectRatio)
 
                     return (
-                        <ResizeHandle
-                            key={cursorPosition}
-                            aspectRatio={aspectRatio}
-                            clickCallback={clickCallback}
-                            containerRef={containerRef}
-                            isResizing={isResizing}
-                            position={cursorPosition}
-                            providerRef={providerRef}
-                            resizeDimensions={resizeDimensions}
-                            resizeFunction={resizeFunction}
-                            rotation={rotation}
-                            setIsResizing={setIsResizing}
-                            setResizeDimensions={setResizeDimensions}
-                            setWrapperParams={setWrapperParams}
-                            wrapperParams={wrapperParams}
-                        />
+                        !hideHandles && (
+                            <ResizeHandle
+                                key={cursorPosition}
+                                aspectRatio={aspectRatio}
+                                clickCallback={clickCallback}
+                                containerRef={containerRef}
+                                isResizing={isResizing}
+                                position={cursorPosition}
+                                providerRef={providerRef}
+                                resizeDimensions={resizeDimensions}
+                                resizeFunction={resizeFunction}
+                                rotation={rotation}
+                                setIsResizing={setIsResizing}
+                                setResizeDimensions={setResizeDimensions}
+                                setWrapperParams={setWrapperParams}
+                                wrapperParams={wrapperParams}
+                            />
+                        )
                     )
                 })}
                 <div className="resize-container-child-wrapper">
