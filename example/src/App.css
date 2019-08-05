@@ -9,7 +9,6 @@ body {
         'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* overflow: hidden; */
 }
 
 .app {
@@ -29,8 +28,8 @@ body {
 
 .app-header {
     background-color: #282c34;
-    min-height: 200vh;
-    min-width: 200vw;
+    min-height: 100vh;
+    min-width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,7 +41,7 @@ body {
 .app-transformable-target {
     position: relative;
     width: 85vw;
-    height: 70vh;
+    height: 60vh;
     background-color: cadetblue;
     overflow: hidden;
 }
