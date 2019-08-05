@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useRef, useState } from 'react'
 import { DndProvider as Provider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import TouchBackend from 'react-dnd-touch-backend'
@@ -18,6 +18,8 @@ export const DndProvider = ({ children }) => {
     const [currentDroppableId, setCurrentDroppableId] = useState(null)
     const [isHoveringDelete, setIsHoveringDelete] = useState(false)
 
+    const droppablePreviewRef = useRef()
+
     const dragLayerNodeStyle = { opacity: isHoveringDelete ? 0.5 : 1 }
 
     return (
@@ -26,6 +28,7 @@ export const DndProvider = ({ children }) => {
                 value={{
                     childTransformables,
                     currentDroppableId,
+                    droppablePreviewRef,
                     isHoveringDelete,
                     setChildTransformables,
                     setCurrentDroppableId,
@@ -36,6 +39,11 @@ export const DndProvider = ({ children }) => {
                     className="drag-layer-portal-node"
                     id="react-transformable-draggable-drag-layer-node"
                     style={dragLayerNodeStyle}
+                />
+                <div
+                    ref={droppablePreviewRef}
+                    className="drag-layer-portal-node"
+                    id="react-transformable-draggable-droppable-preview-node"
                 />
                 {children}
             </DndContext.Provider>

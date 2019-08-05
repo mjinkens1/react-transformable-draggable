@@ -111,7 +111,9 @@ export const Droppable = ({ children, id, ...props }) => {
 
     return (
         <div ref={containerRef} className="droppable-container">
-            {currentDroppableId === id && <DroppablePreview>{children}</DroppablePreview>}
+            {currentDroppableId === id && (
+                <DroppablePreview containerRef={containerRef}>{children}</DroppablePreview>
+            )}
             <div ref={drag}>{children}</div>
         </div>
     )

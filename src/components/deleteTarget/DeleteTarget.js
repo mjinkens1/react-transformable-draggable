@@ -4,9 +4,6 @@ import { useDrop } from 'react-dnd'
 // Components/Context
 import { DndContext } from '../dndProvider/DndProvider'
 
-// Styles
-import './styles.scss'
-
 // Utils
 import { utils } from '../../utils'
 
