@@ -1,14 +1,20 @@
-import React, { createContext, useRef, useState } from 'react'
+import React, { createContext, useContext, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
+import _ from 'lodash-uuid'
+
+// Components/Context
 import { DragLayer } from '../dragLayer/DragLayer'
 import { Transformable } from '../transformable/Transformable'
+import { DndContext } from '../dndProvider/DndProvider'
 
-import _ from 'lodash-uuid'
+// Styles
+import './styles.scss'
 
 export const TransformableContext = createContext({})
 
 export const TransformableTarget = React.forwardRef(({ children, consumerRef, style }, ref) => {
-    const [childTransformables, setChildTransformables] = useState(React.Children.toArray(children))
+    const { childTransformables, setChildTransformables } = useContext(DndContext)
+
     const [currentDragSource, setCurrentDragSource] = useState({ dragSourceId: null })
     const [dragUpdate, setDragUpdate] = useState(null)
     const [lastZIndex, setLastZIndex] = useState(0)
@@ -74,14 +80,16 @@ export const TransformableTarget = React.forwardRef(({ children, consumerRef, st
                 setLastZIndex,
             }}
         >
-            <div ref={providerRef}>
-                <div ref={drop}>
-                    <div ref={ref} style={style}>
+            <div id="transformable-provider-container" ref={providerRef}>
+                <div id="drop-container" ref={drop}>
+                    <div className="transformable-target" ref={ref} style={style}>
                         {React.Children.map(children, child => {
                             return (
                                 dragSourceId &&
                                 dragSourceId === child.props.id && (
-                                    <DragLayer id={dragSourceId}>{child}</DragLayer>
+                                    <DragLayer id={dragSourceId} providerRef={providerRef}>
+                                        {child}
+                                    </DragLayer>
                                 )
                             )
                         })}
@@ -89,7 +97,11 @@ export const TransformableTarget = React.forwardRef(({ children, consumerRef, st
                             ([id, { renderItem, ...props }]) =>
                                 dragSourceId &&
                                 dragSourceId === id && (
-                                    <DragLayer key={id + 'drag-layer'} id={dragSourceId}>
+                                    <DragLayer
+                                        key={id + 'drag-layer'}
+                                        id={dragSourceId}
+                                        providerRef={providerRef}
+                                    >
                                         <Transformable id={id} {...props}>
                                             {renderItem}
                                         </Transformable>

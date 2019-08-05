@@ -9,6 +9,7 @@ body {
         'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
 }
 
 .app {
@@ -49,9 +50,19 @@ body {
 
 .app-add-items {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
+    width: 85vw;
     margin: 10px;
+}
+
+.app-delete-target {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    padding: 0 30px;
+    border: 2px cadetblue solid;
 }
 
 @media screen and (max-width: 991px) {
@@ -63,5 +74,10 @@ body {
         width: 160px;
         height: 160px;
         padding: 0;
+    }
+
+    .app-delete-target {
+        width: 160px;
+        height: 160px;
     }
 }

@@ -1,22 +1,25 @@
 import React, { memo, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useDragLayer } from 'react-dnd'
 import { utils } from '../../utils'
 import './styles.scss'
 
-const getItemStyles = (offsetDiff, setLastOffset) => {
-    if (!offsetDiff) {
+const getItemStyles = (offsetDiff, setLastOffset, providerRef) => {
+    if (!offsetDiff || !providerRef) {
         const transform = `translate(${0}px, ${0}px)`
 
         return { transform, opacity: 0 }
     }
 
+    const { top, left } = providerRef.current.getBoundingClientRect()
+
     const { x, y } = offsetDiff
-    const transform = `translate(${x}px, ${y}px)`
+    const transform = `translate(${x + left}px, ${y + top}px)`
 
     return { transform }
 }
 
-export const DragLayer = memo(({ children, id }) => {
+export const DragLayer = memo(({ children, id, providerRef }) => {
     const [dragItem, setDragItem] = useState({
         initialDimensions: {},
         resizeDimensions: {},
@@ -35,6 +38,9 @@ export const DragLayer = memo(({ children, id }) => {
     useEffect(() => {
         if (item) {
             setDragItem(item)
+            document.querySelector('body').style.overflowX = 'hidden'
+        } else {
+            document.querySelector('body').style.overflowX = 'auto'
         }
 
         if (offsetDiff) {
@@ -66,8 +72,11 @@ export const DragLayer = memo(({ children, id }) => {
         ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
         : `scale(${scaleX}, ${scaleY})`
 
-    return (
-        <div className="drag-layer-container" style={getItemStyles(currentOffsetDiff, item)}>
+    return createPortal(
+        <div
+            className="drag-layer-container"
+            style={getItemStyles(currentOffsetDiff, item, providerRef)}
+        >
             {React.Children.map(children, child => {
                 return React.cloneElement(child, {
                     dragLayerParams: { ...wrapperParams, transform: `rotateZ(${rotation}deg)` },
@@ -77,6 +86,7 @@ export const DragLayer = memo(({ children, id }) => {
                     dragLayerIsDragging: isDragging,
                 })
             })}
-        </div>
+        </div>,
+        document.getElementById('react-transformable-draggable-drag-layer-node')
     )
 }, utils.isEqual)

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import _ from 'lodash-uuid'
 import {
+    DeleteTarget,
     DndProvider,
     Droppable,
     Transformable,
@@ -10,26 +11,29 @@ import {
 import logo from './logo.svg'
 import './App.css'
 
-const renderItem = {
-    renderItem: (
-        <div className="app-render-item">
-            CLICK ME
-            <img src={logo} className="app-logo" alt="logo" />
-            TO ADD
-        </div>
-    ),
-}
+const renderItem = (
+    <div className="app-render-item">
+        CLICK ME
+        <img src={logo} className="app-logo" alt="logo" />
+        TO ADD
+    </div>
+)
 
 const transformableTargetStyle = {
     position: 'relative',
     width: '85vw',
     height: '70vh',
     backgroundColor: 'cadetblue',
-    overflow: 'hidden',
 }
 
 export const App = () => {
     const [renderItems, setRenderItems] = useState([])
+
+    const onDelete = id => {
+        const updatedRenderItems = renderItems.filter(item => item.id !== id)
+
+        setRenderItems(updatedRenderItems)
+    }
 
     return (
         <div className="app">
@@ -43,6 +47,9 @@ export const App = () => {
                         ))}
                     </TransformableTarget>
                     <div className="app-add-items">
+                        <DeleteTarget onDelete={onDelete}>
+                            <div className="app-delete-target">DRAG HERE TO DELETE</div>
+                        </DeleteTarget>
                         <Droppable>
                             <div className="app-render-item">
                                 DRAG ME
@@ -52,7 +59,7 @@ export const App = () => {
                         </Droppable>
                         <div
                             onClick={() =>
-                                setRenderItems([...renderItems, { ...renderItem, id: _.uuid() }])
+                                setRenderItems([...renderItems, { renderItem, id: _.uuid() }])
                             }
                         >
                             <div className="app-render-item">

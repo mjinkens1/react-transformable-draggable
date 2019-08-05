@@ -1,9 +1,41 @@
-import React from 'react'
+import React, { createContext, useState } from 'react'
 import { DndProvider as Provider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import TouchBackend from 'react-dnd-touch-backend'
+
+// Styles
+import './styles.scss'
+
+// Utils
 import { utils } from '../../utils'
+
+export const DndContext = createContext({})
 
 const backend = utils.isMobile() ? TouchBackend : HTML5Backend
 
-export const DndProvider = ({ children }) => <Provider backend={backend}>{children}</Provider>
+export const DndProvider = ({ children }) => {
+    const [childTransformables, setChildTransformables] = useState({})
+    const [isHoveringDelete, setIsHoveringDelete] = useState(false)
+
+    const dragLayerNodeStyle = { opacity: isHoveringDelete ? 0.5 : 1 }
+
+    return (
+        <Provider backend={backend}>
+            <DndContext.Provider
+                value={{
+                    childTransformables,
+                    isHoveringDelete,
+                    setChildTransformables,
+                    setIsHoveringDelete,
+                }}
+            >
+                <div
+                    className="drag-layer-portal-node"
+                    id="react-transformable-draggable-drag-layer-node"
+                    style={dragLayerNodeStyle}
+                />
+                {children}
+            </DndContext.Provider>
+        </Provider>
+    )
+}
