@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDrag } from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import throttle from 'lodash.throttle'
 
-// Components
+// Components/Context
 import { DroppablePreview } from './DroppablePreview'
+import { DndContext } from '../dndProvider/DndProvider'
 
 // Utils
 import { utils } from '../../utils'
@@ -27,6 +28,8 @@ const getPageCoordinates = event => {
 }
 
 export const Droppable = ({ children, id, ...props }) => {
+    const { currentDroppableId, setCurrentDroppableId } = useContext(DndContext)
+
     const [initialPageCoordinates, setInitialPageCoordinates] = useState({})
     const [containerDimensions, setContainerDimensions] = useState({ top: 0, left: 0 })
 
@@ -43,6 +46,12 @@ export const Droppable = ({ children, id, ...props }) => {
             initialDimensions: {},
             resizeDimensions: {},
             wrapperParams: {},
+        },
+        begin: () => {
+            setCurrentDroppableId(id)
+        },
+        end: () => {
+            setCurrentDroppableId(null)
         },
     })
 
@@ -102,7 +111,7 @@ export const Droppable = ({ children, id, ...props }) => {
 
     return (
         <div ref={containerRef} className="droppable-container">
-            <DroppablePreview>{children}</DroppablePreview>
+            {currentDroppableId === id && <DroppablePreview>{children}</DroppablePreview>}
             <div ref={drag}>{children}</div>
         </div>
     )

@@ -15,6 +15,7 @@ const backend = utils.isMobile() ? TouchBackend : HTML5Backend
 
 export const DndProvider = ({ children }) => {
     const [childTransformables, setChildTransformables] = useState({})
+    const [currentDroppableId, setCurrentDroppableId] = useState(null)
     const [isHoveringDelete, setIsHoveringDelete] = useState(false)
 
     const dragLayerNodeStyle = { opacity: isHoveringDelete ? 0.5 : 1 }
@@ -24,8 +25,10 @@ export const DndProvider = ({ children }) => {
             <DndContext.Provider
                 value={{
                     childTransformables,
+                    currentDroppableId,
                     isHoveringDelete,
                     setChildTransformables,
+                    setCurrentDroppableId,
                     setIsHoveringDelete,
                 }}
             >
