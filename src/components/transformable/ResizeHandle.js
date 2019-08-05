@@ -72,10 +72,7 @@ export const ResizeHandle = memo(
 
         useEffect(() => {
             const listenerCallback = event => {
-                if (isMobile) {
-                    event.preventDefault()
-                }
-
+                // Get initial coordinates to compare resize drag to
                 if (!mouseDown && !isDragging) {
                     const { pageX, pageY } = getPageCoordinates(event)
 
@@ -101,11 +98,8 @@ export const ResizeHandle = memo(
 
         useEffect(() => {
             const listenerCallback = event => {
-                if (isMobile) {
-                    event.preventDefault()
-                }
-
                 if (mouseDown && !isDragging) {
+                    // Calculate resize based on drag direction and magnitude
                     const { pageX, pageY } = getPageCoordinates(event)
 
                     const dragDeltaX = pageX - initialPageCoords.pageX
@@ -115,6 +109,7 @@ export const ResizeHandle = memo(
                     const dragAngle = Math.atan(dragDeltaY / dragDeltaX) || 0
                     const rotationRad = (rotation * Math.PI) / 180
 
+                    // Drag angle is offset based on which handle is selected.  This effectively established a unit vector in the direction of the handle to obtain a relative drag angle.  This is needed for proper resizing ehile the element is rotated.
                     const adjustedDragAngle = utils.getOffsetDragAngle(
                         dragDeltaX,
                         dragDeltaY,
@@ -145,6 +140,7 @@ export const ResizeHandle = memo(
                         { aspectRatio, lockAspectRatio, minHeight, minWidth }
                     )
 
+                    // Resize the element
                     setResizeDimensions({
                         ...newResizeDimensions,
                         width: adjustedWidth,
@@ -155,17 +151,18 @@ export const ResizeHandle = memo(
 
             const providerRefCurrent = providerRef.current
 
-            providerRefCurrent.addEventListener(
-                isMobile ? 'touchmove' : 'mousemove',
-                listenerCallback
-            )
+            document
+                .querySelector('body')
+                .addEventListener(isMobile ? 'touchmove' : 'mousemove', listenerCallback)
 
             return () =>
-                providerRefCurrent.removeEventListener(
-                    isMobile ? 'touchmove' : 'mousemove',
-                    listenerCallback,
-                    isMobile ? { passive: false } : {}
-                )
+                document
+                    .querySelector('body')
+                    .removeEventListener(
+                        isMobile ? 'touchmove' : 'mousemove',
+                        listenerCallback,
+                        isMobile ? { passive: false } : {}
+                    )
         }, [
             aspectRatio,
             containerRef,
@@ -190,6 +187,7 @@ export const ResizeHandle = memo(
                 if (mouseDown && !isDragging) {
                     setMouseDown(false)
 
+                    // Calculate new element size accounting for rotation size and set wrapper dimensions to match resized element
                     const {
                         width,
                         height,
@@ -224,15 +222,12 @@ export const ResizeHandle = memo(
             const providerRefCurrent = providerRef.current
 
             providerRefCurrent.addEventListener(isMobile ? 'touchend' : 'mouseup', listenerCallback)
-            !isMobile && providerRefCurrent.addEventListener('mouseleave', listenerCallback)
 
-            return () => {
+            return () =>
                 providerRefCurrent.removeEventListener(
                     isMobile ? 'touchend' : 'mouseup',
                     listenerCallback
                 )
-                !isMobile && providerRefCurrent.removeEventListener('mouseleave', listenerCallback)
-            }
         }, [
             containerRef,
             isDragging,

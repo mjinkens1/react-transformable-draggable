@@ -1,10 +1,18 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { memo, useContext, useEffect, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 
 // Components/Context
 import { DndContext } from '../dndProvider/DndProvider'
 
-export const DeleteTarget = ({ children, onDelete }) => {
+// Styles
+import './styles.scss'
+
+// Utils
+import { utils } from '../../utils'
+
+const isMobile = utils.isMobile()
+
+export const DeleteTarget = memo(({ children, onDelete, onHoverEnd, onHoverStart }) => {
     const {
         childTransformables,
         isHoveringDelete,
@@ -13,15 +21,17 @@ export const DeleteTarget = ({ children, onDelete }) => {
     } = useContext(DndContext)
     const hoverTimeout = useRef()
 
-    const [, drop] = useDrop({
+    const [{ id, type }, drop] = useDrop({
         accept: ['TRANSFORMABLE_DRAGGABLE'],
-        collect: monitor => ({ ...monitor.getItem() }),
-        drop: ({ id }, monitor) => {
+        collect: monitor => ({ id, type, ...monitor.getItem() }),
+        drop: ({ id, type }, monitor) => {
             const { [id]: idToDelete, ...remainingTranformables } = childTransformables
 
             setChildTransformables(remainingTranformables)
 
-            onDelete && onDelete(id)
+            document.querySelector('body').style.overflowX = 'auto'
+
+            onDelete && onDelete(id, type)
         },
         hover: () => {
             if (hoverTimeout.current) {
@@ -29,14 +39,23 @@ export const DeleteTarget = ({ children, onDelete }) => {
             }
 
             if (!isHoveringDelete) {
+                onHoverStart && onHoverStart(id, type)
                 setIsHoveringDelete(true)
             }
 
-            hoverTimeout.current = setTimeout(() => {
-                setIsHoveringDelete(false)
-            }, 50)
+            hoverTimeout.current = setTimeout(
+                () => {
+                    onHoverEnd && onHoverEnd(id, type)
+                    setIsHoveringDelete(false)
+                },
+                isMobile ? 300 : 100
+            )
         },
     })
 
-    return <div ref={drop}>{children}</div>
-}
+    return (
+        <div ref={drop} className="delete-target">
+            {children}
+        </div>
+    )
+}, utils.isEqual)

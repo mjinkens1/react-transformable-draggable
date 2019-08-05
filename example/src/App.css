@@ -9,11 +9,12 @@ body {
         'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .app {
     display: flex;
+    width: 100vw;
     height: 100%;
     flex-direction: column;
     text-align: center;
@@ -28,7 +29,8 @@ body {
 
 .app-header {
     background-color: #282c34;
-    min-height: 100vh;
+    min-height: 200vh;
+    min-width: 200vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,18 +39,27 @@ body {
     color: white;
 }
 
+.app-transformable-target {
+    position: relative;
+    width: 85vw;
+    height: 70vh;
+    background-color: cadetblue;
+    overflow: hidden;
+}
+
 .app-render-item {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 300px;
+    width: 250px;
     height: 200px;
     padding: 30px;
     background-color: #282c34;
     white-space: nowrap;
+    user-select: none;
 }
 
-.app-add-items {
+.app-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -56,13 +67,31 @@ body {
     margin: 10px;
 }
 
+.app-add-items {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .app-delete-target {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 180px;
+    max-width: 400px;
     padding: 0 30px;
     border: 2px cadetblue solid;
+    user-select: none;
+}
+
+.app-delete-target--hover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    max-width: 400px;
+    padding: 0 30px;
+    border: 2px white solid;
 }
 
 @media screen and (max-width: 991px) {
@@ -70,14 +99,37 @@ body {
         font-size: 20px;
     }
 
+    .app-transformable-target {
+        position: relative;
+        width: 85vw;
+        height: 65vh;
+        background-color: cadetblue;
+    }
+
+    .app-toolbar {
+        flex-direction: column;
+        justify-content: center;
+        width: 85vw;
+    }
+
+    .app-delete-target {
+        height: 140px;
+        max-width: none;
+    }
+
+    .app-delete-target--hover {
+        height: 140px;
+        max-width: none;
+        border: 2px white solid;
+    }
+
+    .app-add-items {
+        margin: 10px;
+    }
+
     .app-render-item {
         width: 160px;
         height: 160px;
         padding: 0;
-    }
-
-    .app-delete-target {
-        width: 160px;
-        height: 160px;
     }
 }

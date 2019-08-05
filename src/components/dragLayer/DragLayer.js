@@ -1,32 +1,43 @@
 import React, { memo, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useDragLayer } from 'react-dnd'
+import throttle from 'lodash.throttle'
+
+// Utils
 import { utils } from '../../utils'
+
+// Styles
 import './styles.scss'
 
-const getItemStyles = (offsetDiff, setLastOffset, providerRef) => {
+const getItemStyles = throttle((offsetDiff, item, providerRef, initialPageScroll) => {
     if (!offsetDiff || !providerRef) {
-        const transform = `translate(${0}px, ${0}px)`
+        const transform = `translate(${x + left}px, ${y + top}px)`
 
-        return { transform, opacity: 0 }
+        return { transform, display: 'none' }
     }
 
-    const { top, left } = providerRef.current.getBoundingClientRect()
+    const { scrollX: initialScrollX, scrollY: initialScrollY } = initialPageScroll
+    const { scrollX, scrollY } = window
 
+    const deltaScrollX = scrollX - initialScrollX
+    const deltaScrollY = scrollY - initialScrollY
+
+    const { top, left } = providerRef.current.getBoundingClientRect()
     const { x, y } = offsetDiff
-    const transform = `translate(${x + left}px, ${y + top}px)`
+
+    // Transform relative to previder container, accounting for any scroll changes during drag
+    const transform = `translate(${x + left + deltaScrollX}px, ${y + top + deltaScrollY}px)`
 
     return { transform }
-}
+}, 10)
 
-export const DragLayer = memo(({ children, id, providerRef }) => {
+export const DragLayer = memo(({ children, id, initialPageScroll, providerRef }) => {
+    const [currentOffsetDiff, setCurrentOffsetDiff] = useState({ x: 0, y: 0 })
     const [dragItem, setDragItem] = useState({
         initialDimensions: {},
         resizeDimensions: {},
         wrapperParams: {},
     })
-
-    const [currentOffsetDiff, setCurrentOffsetDiff] = useState({ x: 0, y: 0 })
 
     const { isDragging, item, itemType, offsetDiff } = useDragLayer(monitor => ({
         isDragging: monitor.isDragging(),
@@ -36,7 +47,7 @@ export const DragLayer = memo(({ children, id, providerRef }) => {
     }))
 
     useEffect(() => {
-        if (item) {
+        if (isDragging) {
             setDragItem(item)
             document.querySelector('body').style.overflowX = 'hidden'
         } else {
@@ -44,11 +55,12 @@ export const DragLayer = memo(({ children, id, providerRef }) => {
         }
 
         if (offsetDiff) {
+            // This puts style updates one render behind the offset update and prevents flashing when stopping drag
             setCurrentOffsetDiff(offsetDiff)
         }
-    }, [item, offsetDiff])
+    }, [item, offsetDiff, isDragging])
 
-    if (!dragItem || itemType === 'DROPPABLE_WRAPPER') {
+    if ((!isDragging, !dragItem || itemType === 'DROPPABLE_WRAPPER')) {
         return null
     }
 
@@ -75,7 +87,7 @@ export const DragLayer = memo(({ children, id, providerRef }) => {
     return createPortal(
         <div
             className="drag-layer-container"
-            style={getItemStyles(currentOffsetDiff, item, providerRef)}
+            style={getItemStyles(currentOffsetDiff, item, providerRef, initialPageScroll)}
         >
             {React.Children.map(children, child => {
                 return React.cloneElement(child, {

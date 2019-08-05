@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDrag } from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
 import throttle from 'lodash.throttle'
 
 // Components/Context
@@ -59,7 +60,6 @@ const TransformableCore = ({
 
     const [aspectRatio, setAspectRatio] = useState(INITIAL_ASPECT_RATIO)
     const [initialDimensions, setInitialDimensions] = useState(INITIAL_DIMENSIONS)
-    const [isDragging, setIsDragging] = useState(false)
     const [isResizing, setIsResizing] = useState(false)
     const [isRotating, setIsRotating] = useState(false)
     const [initialized, setInitialized] = useState(false)
@@ -88,7 +88,7 @@ const TransformableCore = ({
         }
     }
 
-    const [, drag] = useDrag({
+    const [{ isDragging }, drag, preview] = useDrag({
         item: {
             id,
             type: 'TRANSFORMABLE_DRAGGABLE',
@@ -101,15 +101,17 @@ const TransformableCore = ({
             minWidth,
         },
         begin: () => {
-            setCurrentDragSource({ dragSourceId: id })
-            setIsDragging(true)
+            const { scrollX, scrollY } = window
+
+            setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
         },
         canDrag: !isResizing && !isRotating,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
-        end: () => {
-            setIsDragging(false)
-        },
     })
+
+    useEffect(() => {
+        preview(getEmptyImage())
+    }, [])
 
     useEffect(() => {
         if (!initialized) {
