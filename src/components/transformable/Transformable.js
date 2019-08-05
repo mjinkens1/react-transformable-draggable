@@ -41,6 +41,7 @@ const TransformableCore = ({
     isDragLayer,
 }) => {
     const {
+        className,
         hideBoundingBox,
         hideHandles,
         initialPosition,
@@ -49,6 +50,7 @@ const TransformableCore = ({
         maxWidth,
         minHeight,
         minWidth,
+        style,
     } = useContext(ApiContext)
 
     const {
@@ -278,7 +280,7 @@ const TransformableCore = ({
                         )
                     )
                 })}
-                <div className="resize-container-child-wrapper">
+                <div className={`resize-container-child-wrapper ${className}`} style={style}>
                     <div ref={childRef} style={childContainerStyle}>
                         {children}
                     </div>

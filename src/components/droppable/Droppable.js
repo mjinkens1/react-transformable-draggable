@@ -27,7 +27,7 @@ const getPageCoordinates = event => {
     return event
 }
 
-export const Droppable = ({ children, id, ...props }) => {
+export const Droppable = ({ children, className, style, id, ...props }) => {
     const { currentDroppableId, setCurrentDroppableId } = useContext(DndContext)
 
     const [initialPageCoordinates, setInitialPageCoordinates] = useState({})
@@ -110,7 +110,7 @@ export const Droppable = ({ children, id, ...props }) => {
     }, [])
 
     return (
-        <div ref={containerRef} className="droppable-container">
+        <div ref={containerRef} className={`droppable-container ${className}`} style={style}>
             {currentDroppableId === id && (
                 <DroppablePreview containerRef={containerRef}>{children}</DroppablePreview>
             )}

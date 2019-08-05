@@ -4,6 +4,7 @@ export const ApiContext = createContext({})
 
 export const ApiLayer = ({
     children,
+    className,
     hideBoundingBox,
     hideHandles,
     initialPosition,
@@ -16,10 +17,12 @@ export const ApiLayer = ({
     resizeHandleStyleMobile,
     rotateHandleStyle,
     rotateHandleStyleMobile,
+    style,
 }) => {
     return (
         <ApiContext.Provider
             value={{
+                className,
                 hideBoundingBox,
                 hideHandles,
                 initialPosition,
@@ -32,6 +35,7 @@ export const ApiLayer = ({
                 resizeHandleStyleMobile,
                 rotateHandleStyle,
                 rotateHandleStyleMobile,
+                style,
             }}
         >
             {children}
