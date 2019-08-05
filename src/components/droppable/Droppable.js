@@ -110,7 +110,7 @@ export const Droppable = ({ children, className, style, id, ...props }) => {
     }, [])
 
     return (
-        <div ref={containerRef} className={`droppable-container ${className}`} style={style}>
+        <div ref={containerRef} className={`droppable-container ${className || ''}`} style={style}>
             {currentDroppableId === id && (
                 <DroppablePreview containerRef={containerRef}>{children}</DroppablePreview>
             )}

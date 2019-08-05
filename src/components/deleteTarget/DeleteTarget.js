@@ -52,7 +52,7 @@ export const DeleteTarget = memo(
         })
 
         return (
-            <div ref={drop} className={`delete-target ${className}`} style={style}>
+            <div ref={drop} className={`delete-target ${className || ''}`} style={style}>
                 {children}
             </div>
         )

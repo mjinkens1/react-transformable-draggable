@@ -280,7 +280,7 @@ const TransformableCore = ({
                         )
                     )
                 })}
-                <div className={`resize-container-child-wrapper ${className}`} style={style}>
+                <div className={`resize-container-child-wrapper ${className || ''}`} style={style}>
                     <div ref={childRef} style={childContainerStyle}>
                         {children}
                     </div>

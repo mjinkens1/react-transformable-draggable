@@ -121,7 +121,7 @@ export const TransformableTarget = React.forwardRef(
             >
                 <div id="transformable-provider-container" ref={providerRef}>
                     <div id="drop-container" ref={drop}>
-                        <div className={className} ref={ref} style={style}>
+                        <div className={className || ''} ref={ref} style={style}>
                             {/*/ Drag layer for manually added chldren of component (normal props.children) */}
                             {React.Children.map(children, child => {
                                 return (
