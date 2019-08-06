@@ -31,6 +31,8 @@ const cursorPositions = [
 
 const cursorPositionsAspectLocked = ['top-left', 'top-right', 'bottom-right', 'bottom-left']
 
+const isMobile = isMobile
+
 const TransformableCore = ({
     children,
     dragLayerBounds,
@@ -42,6 +44,8 @@ const TransformableCore = ({
 }) => {
     const {
         className,
+        boundingBoxStyle,
+        boundingBoxStyleMobile,
         hideBoundingBox,
         hideHandles,
         initialPosition,
@@ -166,14 +170,11 @@ const TransformableCore = ({
     useEffect(() => {
         const containerRefCurrent = containerRef.current
 
-        containerRefCurrent.addEventListener(
-            utils.isMobile() ? 'touchstart' : 'mousedown',
-            clickCallback
-        )
+        containerRefCurrent.addEventListener(isMobile ? 'touchstart' : 'mousedown', clickCallback)
 
         return () =>
             containerRefCurrent.removeEventListener(
-                utils.isMobile() ? 'touchstart' : 'mousedown',
+                isMobile ? 'touchstart' : 'mousedown',
                 clickCallback
             )
     }, [clickCallback, containerRef])
@@ -229,6 +230,8 @@ const TransformableCore = ({
     }
 
     const containerStyle = {
+        border: '1px solid',
+        ...boundingBoxStyle,
         ...resizeBounds,
         ...dragLayerBounds,
         minWidth,

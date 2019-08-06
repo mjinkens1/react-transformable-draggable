@@ -53,7 +53,13 @@ export const ResizeHandle = memo(
 
         const cursorRef = useRef()
 
-        const { lockAspectRatio, minHeight, minWidth, style, styleMobile } = useContext(ApiContext)
+        const {
+            lockAspectRatio,
+            minHeight,
+            minWidth,
+            resizeHandleStyle,
+            resizeHandleStyleMobile,
+        } = useContext(ApiContext)
 
         useEffect(() => {
             const cursorRefCurrent = cursorRef.current
@@ -251,7 +257,7 @@ export const ResizeHandle = memo(
                             : 'resize-handle--drag-not-selected'
                         : ''
                 } ${isMobile ? 'resize-handle--mobile' : ''}`}
-                style={isMobile ? styleMobile : style}
+                style={isMobile ? resizeHandleStyleMobile : resizeHandleStyle}
             />
         )
     },

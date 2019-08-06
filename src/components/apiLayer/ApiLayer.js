@@ -3,6 +3,8 @@ import React, { createContext } from 'react'
 export const ApiContext = createContext({})
 
 export const ApiLayer = ({
+    boundingBoxStyle,
+    boundingBoxStyleMobile,
     children,
     className,
     hideBoundingBox,
@@ -22,6 +24,8 @@ export const ApiLayer = ({
     return (
         <ApiContext.Provider
             value={{
+                boundingBoxStyle,
+                boundingBoxStyleMobile,
                 className,
                 hideBoundingBox,
                 hideHandles,
@@ -44,6 +48,8 @@ export const ApiLayer = ({
 }
 
 ApiLayer.defaultProps = {
+    boundingBoxStyle: undefined,
+    boundingBoxStyleMobile: undefined,
     hideBoundingBox: false,
     hideHandles: false,
     initialPosition: 'center',

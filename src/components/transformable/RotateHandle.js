@@ -43,7 +43,7 @@ export const RotateHandle = memo(
 
         const cursorRef = useRef()
 
-        const { style, styleMobile } = useContext(ApiContext)
+        const { rotateHandleStyle, rotateHandleStyleMobile } = useContext(ApiContext)
 
         useEffect(() => {
             const cursorRefCurrent = cursorRef.current
@@ -158,12 +158,17 @@ export const RotateHandle = memo(
         }, [mouseDown, providerRef, setIsRotating])
 
         const color =
-            (style && style.color) || (styleMobile && styleMobile.color)
-                ? { color: style.fill }
+            (rotateHandleStyle && rotateHandleStyle.color) ||
+            (rotateHandleStyleMobile && rotateHandleStyleMobile.color)
+                ? {
+                      color: rotateHandleStyle
+                          ? rotateHandleStyle.fill
+                          : rotateHandleStyleMobile.fill,
+                  }
                 : {}
 
         const styleWithColorProp = {
-            ...(isMobile ? styleMobile : style),
+            ...(isMobile ? rotateHandleStyleMobile : rotateHandleStyle),
             ...color,
         }
 
