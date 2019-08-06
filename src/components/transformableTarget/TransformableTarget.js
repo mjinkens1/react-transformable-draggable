@@ -66,6 +66,12 @@ export const TransformableTarget = React.forwardRef(
                         [id]: { renderItem: children, initialPosition, ...props },
                     })
                 } else if (type === 'TRANSFORMABLE_DRAGGABLE') {
+                    const offset = monitor.getDifferenceFromInitialOffset()
+
+                    if (!offset) {
+                        return
+                    }
+
                     const {
                         scrollX: initialScrollX,
                         scrollY: initialScrollY,
@@ -76,7 +82,7 @@ export const TransformableTarget = React.forwardRef(
                     const deltaScrollX = scrollX - initialScrollX
                     const deltaScrollY = scrollY - initialScrollY
 
-                    const { x, y } = monitor.getDifferenceFromInitialOffset()
+                    const { x, y } = offset
 
                     const update = { x: x + deltaScrollX, y: y + deltaScrollY, id }
 
