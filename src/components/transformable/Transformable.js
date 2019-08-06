@@ -108,6 +108,11 @@ const TransformableCore = ({
             minHeight: getMinHeight(),
             minWidth,
         },
+        begin: () => {
+            const { scrollX, scrollY } = window
+
+            setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
+        },
         canDrag: !isResizing && !isRotating,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
     })
@@ -201,22 +206,6 @@ const TransformableCore = ({
         window.addEventListener('resize', listenerCallback)
 
         return () => window.removeEventListener('resize', listenerCallback)
-    }, [wrapperParams])
-
-    useEffect(() => {
-        const listenerCallback = () => {
-            const { scrollX, scrollY } = window
-
-            setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
-        }
-
-        const containerRefCurrent = containerRef.current
-
-        const event = isMobile ? 'touchstart' : 'mousedown'
-
-        containerRefCurrent.addEventListener(event, listenerCallback)
-
-        return () => containerRefCurrent.removeEventListener(event, listenerCallback)
     }, [wrapperParams])
 
     const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
