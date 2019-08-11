@@ -31,7 +31,7 @@ const cursorPositions = [
 
 const cursorPositionsAspectLocked = ['top-left', 'top-right', 'bottom-right', 'bottom-left']
 
-const isMobile = isMobile
+const isMobile = utils.isMobile()
 
 const TransformableCore = ({
     children,
@@ -81,7 +81,9 @@ const TransformableCore = ({
 
     const clickCallback = useCallback(() => {
         const nextZIndex = lastZIndex + 1
+        const { scrollX, scrollY } = window
 
+        setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
         setZIndex(nextZIndex)
         setLastZIndex(nextZIndex)
     }, [lastZIndex, setLastZIndex])
@@ -108,18 +110,26 @@ const TransformableCore = ({
             minHeight: getMinHeight(),
             minWidth,
         },
-        begin: () => {
-            const { scrollX, scrollY } = window
-
-            setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
-        },
         canDrag: !isResizing && !isRotating,
         collect: monitor => ({ isDragging: monitor.isDragging() }),
+        options: { arePropsEqual: utils.isEqual },
     })
 
     useEffect(() => {
         preview(getEmptyImage())
     }, [])
+
+    useEffect(() => {
+        const containerRefCurrent = containerRef.current
+
+        containerRefCurrent.addEventListener(isMobile ? 'touchstart' : 'mousedown', clickCallback)
+
+        return () =>
+            containerRefCurrent.removeEventListener(
+                isMobile ? 'touchstart' : 'mousedown',
+                clickCallback
+            )
+    }, [clickCallback, containerRef])
 
     useEffect(() => {
         if (!initialized) {
@@ -166,18 +176,6 @@ const TransformableCore = ({
         setLastZIndex,
         zIndex,
     ])
-
-    useEffect(() => {
-        const containerRefCurrent = containerRef.current
-
-        containerRefCurrent.addEventListener(isMobile ? 'touchstart' : 'mousedown', clickCallback)
-
-        return () =>
-            containerRefCurrent.removeEventListener(
-                isMobile ? 'touchstart' : 'mousedown',
-                clickCallback
-            )
-    }, [clickCallback, containerRef])
 
     useLayoutEffect(() => {
         if (dragUpdate) {

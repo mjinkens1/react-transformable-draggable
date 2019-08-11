@@ -16,7 +16,12 @@ export const TransformableContext = createContext({})
 
 export const TransformableTarget = React.forwardRef(
     ({ children, className, consumerRef, style }, ref) => {
-        const { childTransformables, setChildTransformables } = useContext(DndContext)
+        const {
+            childTransformables,
+            isHoveringDelete,
+            setChildTransformables,
+            setIsHoveringDelete,
+        } = useContext(DndContext)
 
         const [currentDragSource, setCurrentDragSource] = useState({ dragSourceId: null })
         const [dragUpdate, setDragUpdate] = useState(null)
@@ -27,6 +32,7 @@ export const TransformableTarget = React.forwardRef(
         const [, drop] = useDrop({
             accept: ['TRANSFORMABLE_DRAGGABLE', 'DROPPABLE_WRAPPER'],
             collect: monitor => ({ ...monitor.getItem() }),
+            options: () => ({ arePropsEqual: utils.isEqual }),
             drop: (
                 {
                     children,
@@ -66,6 +72,10 @@ export const TransformableTarget = React.forwardRef(
                         [id]: { renderItem: children, initialPosition, ...props },
                     })
                 } else if (type === 'TRANSFORMABLE_DRAGGABLE') {
+                    if (isHoveringDelete) {
+                        setIsHoveringDelete(false)
+                    }
+
                     const offset = monitor.getDifferenceFromInitialOffset()
 
                     if (!offset) {

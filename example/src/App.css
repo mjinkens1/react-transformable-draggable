@@ -11,14 +11,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.app {
-    display: flex;
-    width: 100vw;
-    height: 100%;
-    flex-direction: column;
-    text-align: center;
-}
-
 .app-logo {
     width: auto;
     height: 60%;
@@ -26,9 +18,13 @@ body {
     user-select: none;
 }
 
-.app-header {
-    background-color: #282c34;
+.app {
+    display: flex;
+    width: 100vw;
     min-height: 100vh;
+    flex-direction: column;
+    text-align: center;
+    background-color: #282c34;
     min-width: 100vw;
     display: flex;
     flex-direction: column;
@@ -101,7 +97,7 @@ body {
     .app-transformable-target {
         position: relative;
         width: 85vw;
-        height: 65vh;
+        height: 50vh;
         background-color: cadetblue;
     }
 
