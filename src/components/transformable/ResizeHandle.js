@@ -142,7 +142,6 @@ export const ResizeHandle = memo(
                         adjustedDeltaY,
                         wrapperWidth,
                         wrapperHeight,
-                        containerRef,
                         { aspectRatio, lockAspectRatio, minHeight, minWidth }
                     )
 
