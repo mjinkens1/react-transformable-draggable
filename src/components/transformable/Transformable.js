@@ -6,8 +6,8 @@ import throttle from 'lodash.throttle'
 // Components/Context
 import { ApiContext, ApiLayer } from '../apiLayer/ApiLayer'
 import { TransformableContext } from '../transformableTarget/TransformableTarget'
-import { ResizeHandle } from './ResizeHandle'
-import { RotateHandle } from './RotateHandle'
+import { ResizeHandle } from '../handles/ResizeHandle'
+import { RotateHandle } from '../handles/RotateHandle'
 
 // Styles
 import './styles.scss'
