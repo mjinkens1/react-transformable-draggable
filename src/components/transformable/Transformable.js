@@ -8,6 +8,7 @@ import { ApiContext, ApiLayer } from '../apiLayer/ApiLayer'
 import { TransformableContext } from '../transformableTarget/TransformableTarget'
 import { ResizeHandle } from '../handles/ResizeHandle'
 import { RotateHandle } from '../handles/RotateHandle'
+import { defaultProps } from '../apiLayer/ApiLayer'
 
 // Styles
 import './styles.scss'
@@ -84,6 +85,7 @@ const TransformableCore = ({
         const { scrollX, scrollY } = window
 
         setCurrentDragSource({ dragSourceId: id, pageScroll: { scrollX, scrollY } })
+
         setZIndex(nextZIndex)
         setLastZIndex(nextZIndex)
     }, [lastZIndex, setLastZIndex])
@@ -120,19 +122,8 @@ const TransformableCore = ({
     }, [])
 
     useEffect(() => {
-        const containerRefCurrent = containerRef.current
-
-        containerRefCurrent.addEventListener(isMobile ? 'touchstart' : 'mousedown', clickCallback)
-
-        return () =>
-            containerRefCurrent.removeEventListener(
-                isMobile ? 'touchstart' : 'mousedown',
-                clickCallback
-            )
-    }, [clickCallback, containerRef])
-
-    useEffect(() => {
         if (!initialized) {
+            console.log('INIT')
             React.Children.only(children)
 
             const childDimensions = {
@@ -205,6 +196,32 @@ const TransformableCore = ({
 
         return () => window.removeEventListener('resize', listenerCallback)
     }, [wrapperParams])
+
+    useEffect(() => {
+        const mobileCallback = event => {
+            const isRenderChild = event.target.id === id || event.target.parentElement.id === id
+
+            if (isRenderChild) {
+                clickCallback()
+            }
+        }
+
+        const containerRefCurrent = containerRef.current
+        const body = document.querySelector('body')
+
+        containerRefCurrent.addEventListener('mousedown', clickCallback)
+
+        if (isMobile) {
+            body.addEventListener('touchstart', mobileCallback)
+        }
+
+        return () => {
+            containerRefCurrent.removeEventListener('mousedown', clickCallback)
+            if (isMobile) {
+                body.removeEventListener('touchstart', mobileCallback)
+            }
+        }
+    }, [clickCallback, containerRef])
 
     const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
 
@@ -282,7 +299,7 @@ const TransformableCore = ({
                     )
                 })}
                 <div className={`resize-container-child-wrapper ${className || ''}`} style={style}>
-                    <div ref={childRef} style={childContainerStyle}>
+                    <div id={id} ref={childRef} style={childContainerStyle}>
                         {children}
                     </div>
                 </div>
@@ -296,3 +313,5 @@ export const Transformable = props => (
         <TransformableCore {...props} />
     </ApiLayer>
 )
+
+Transformable.defaultProps = defaultProps

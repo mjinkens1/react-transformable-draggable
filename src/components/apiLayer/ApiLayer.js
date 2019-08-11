@@ -54,8 +54,8 @@ ApiLayer.defaultProps = {
     hideHandles: false,
     initialPosition: 'center',
     lockAspectRatio: false,
-    maxWidth: 'none',
-    maxHeight: 'none',
+    // maxWidth: 'none',
+    // maxHeight: 'none',
     minWidth: 70,
     minHeight: 70,
     resizeHandleStyle: undefined,
@@ -63,3 +63,5 @@ ApiLayer.defaultProps = {
     rotateHandleStyle: undefined,
     rotateHandleStyleMobile: undefined,
 }
+
+export const defaultProps = ApiLayer.defaultProps
