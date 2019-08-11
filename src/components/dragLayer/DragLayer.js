@@ -10,10 +10,10 @@ import { utils } from '../../utils'
 import './styles.scss'
 
 const getItemStyles = throttle((offsetDiff, item, providerRef, initialPageScroll) => {
-    if (!offsetDiff || !providerRef) {
+    if (!offsetDiff || !providerRef || !initialPageScroll) {
         const transform = `translate(${x + left}px, ${y + top}px)`
 
-        return { transform, display: 'none' }
+        return { transform }
     }
 
     const { scrollX: initialScrollX, scrollY: initialScrollY } = initialPageScroll
@@ -26,7 +26,7 @@ const getItemStyles = throttle((offsetDiff, item, providerRef, initialPageScroll
     const { x, y } = offsetDiff
 
     // Transform relative to previder container, accounting for any scroll changes during drag
-    const transform = `translate(${x + left + deltaScrollX}px, ${y + top + deltaScrollY}px)`
+    const transform = `translate3d(${x + left + deltaScrollX}px, ${y + top + deltaScrollY}px, 0)`
 
     return { transform }
 }, 10)
@@ -49,18 +49,10 @@ export const DragLayer = memo(({ children, id, initialPageScroll, providerRef })
     useEffect(() => {
         if (isDragging) {
             setDragItem(item)
-            document.querySelector('body').style.overflowX = 'hidden'
-        } else {
-            document.querySelector('body').style.overflowX = 'auto'
         }
+    }, [item, isDragging])
 
-        if (offsetDiff) {
-            // This puts style updates one render behind the offset update and prevents flashing when stopping drag
-            setCurrentOffsetDiff(offsetDiff)
-        }
-    }, [item, offsetDiff, isDragging])
-
-    if ((!isDragging, !dragItem || itemType === 'DROPPABLE_WRAPPER')) {
+    if (!dragItem || itemType === 'DROPPABLE_WRAPPER') {
         return null
     }
 
@@ -87,7 +79,7 @@ export const DragLayer = memo(({ children, id, initialPageScroll, providerRef })
     return createPortal(
         <div
             className="drag-layer-container"
-            style={getItemStyles(currentOffsetDiff, item, providerRef, initialPageScroll)}
+            style={getItemStyles(offsetDiff, item, providerRef, initialPageScroll)}
         >
             {React.Children.map(children, child => {
                 return React.cloneElement(child, {

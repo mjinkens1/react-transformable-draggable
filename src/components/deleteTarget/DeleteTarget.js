@@ -25,31 +25,45 @@ export const DeleteTarget = memo(
             drop: ({ id, type }, monitor) => {
                 const { [id]: idToDelete, ...remainingTranformables } = childTransformables
 
-                setChildTransformables(remainingTranformables)
+                if (isMobile) {
+                    onHoverEnd && onHoverEnd(id, type)
+                    setIsHoveringDelete(false)
+                }
 
-                document.querySelector('body').style.overflowX = 'auto'
+                setChildTransformables(remainingTranformables)
 
                 onDelete && onDelete(id, type)
             },
-            hover: () => {
-                if (hoverTimeout.current) {
-                    clearTimeout(hoverTimeout.current)
-                }
-
-                if (!isHoveringDelete) {
+            hover: (_, monitor) => {
+                if (isMobile) {
                     onHoverStart && onHoverStart(id, type)
                     setIsHoveringDelete(true)
-                }
+                } else {
+                    if (hoverTimeout.current) {
+                        clearTimeout(hoverTimeout.current)
+                    }
 
-                hoverTimeout.current = setTimeout(
-                    () => {
-                        onHoverEnd && onHoverEnd(id, type)
-                        setIsHoveringDelete(false)
-                    },
-                    isMobile ? 300 : 100
-                )
+                    if (!isHoveringDelete) {
+                        setIsHoveringDelete(true)
+                    }
+
+                    hoverTimeout.current = setTimeout(
+                        () => {
+                            setIsHoveringDelete(false)
+                        },
+                        isMobile ? 100 : 100
+                    )
+                }
             },
         })
+
+        useEffect(() => {
+            if (isHoveringDelete) {
+                onHoverStart && onHoverStart(id, type)
+            } else {
+                onHoverEnd && onHoverEnd(id, type)
+            }
+        }, [isHoveringDelete])
 
         return (
             <div ref={drop} className={`delete-target ${className || ''}`} style={style}>

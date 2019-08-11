@@ -23,7 +23,7 @@ export const DndProvider = ({ children }) => {
     const dragLayerNodeStyle = { opacity: isHoveringDelete ? 0.5 : 1 }
 
     return (
-        <Provider backend={backend}>
+        <Provider backend={backend} options={{ delayTouchStart: 10 }}>
             <DndContext.Provider
                 value={{
                     childTransformables,
