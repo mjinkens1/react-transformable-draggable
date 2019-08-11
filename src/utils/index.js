@@ -36,76 +36,79 @@ export const utils = {
     getResizeFunction: position => {
         switch (position) {
             case 'top-left':
-                return (offsetX, offsetY, width, height, containerRef, options) => {
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
                     const { aspectRatio, lockAspectRatio, minWidth, minHeight } = options
 
-                    const maxOffsetX = width - minWidth
+                    const maxOffsetX = lockAspectRatio
+                        ? Math.min(wrapperWidth - minWidth, wrapperHeight * aspectRatio - minWidth)
+                        : wrapperWidth - minWidth
                     const maxOffsetY = lockAspectRatio
-                        ? height > width
-                            ? Math.min(height - minHeight, height - width / aspectRatio)
-                            : height - minHeight
-                        : height - minHeight
+                        ? Math.min(
+                              wrapperHeight - minHeight,
+                              wrapperWidth / aspectRatio - minHeight
+                          )
+                        : wrapperHeight - minHeight
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
 
                     return {
-                        top: 0 + safeOffsetY,
+                        top: lockAspectRatio ? safeOffsetX / aspectRatio : safeOffsetY,
                         right: 0,
                         bottom: 0,
-                        left: 0 + safeOffsetX,
+                        left: safeOffsetX,
                     }
                 }
 
             case 'top-right':
-                return (offsetX, offsetY, width, height, containerRef, options) => {
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
                     const { aspectRatio, lockAspectRatio, minHeight } = options
 
-                    const maxOffsetY = lockAspectRatio
-                        ? height > width
-                            ? Math.min(height - minHeight, height - width / aspectRatio)
-                            : height - minHeight
-                        : height - minHeight
+                    const maxOffsetY = wrapperHeight - minHeight
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
 
                     return {
                         top: 0 + safeOffsetY,
-                        right: 0 - offsetX,
+                        right: lockAspectRatio ? safeOffsetY * aspectRatio : 0 - offsetX,
                         bottom: 0,
                         left: 0,
                     }
                 }
 
             case 'bottom-right':
-                return (offsetX, offsetY, width, height, containerRef) => ({
-                    top: 0,
-                    right: 0 - offsetX,
-                    bottom: 0 - offsetY,
-                    left: 0,
-                })
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
+                    const { aspectRatio, lockAspectRatio, minHeight } = options
+
+                    return {
+                        top: 0,
+                        right: 0 - offsetX,
+                        bottom: lockAspectRatio ? (0 - offsetX) / aspectRatio : 0 - offsetY,
+                        left: 0,
+                    }
+                }
 
             case 'bottom-left':
-                return (offsetX, offsetY, width, height, containerRef, options) => {
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
-                    const { minWidth } = options
+                    const { aspectRatio, lockAspectRatio, minHeight, minWidth } = options
 
-                    const maxOffsetX = width - minWidth
+                    const maxOffsetX = wrapperWidth - minWidth
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
                     return {
                         top: 0,
                         right: 0,
-                        bottom: 0 - offsetY,
+                        bottom: lockAspectRatio ? safeOffsetX / aspectRatio : 0 - offsetY,
                         left: 0 + safeOffsetX,
                     }
                 }
 
             case 'top-center':
-                return (offsetX, offsetY, width, height, containerRef, options) => {
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
                     const { minHeight } = options
 
-                    const maxOffsetY = height - minHeight
+                    const maxOffsetY = height - wrapperHeight
                     const safeOffsetY = Math.min(offsetY, maxOffsetY)
 
                     return {
@@ -117,7 +120,7 @@ export const utils = {
                 }
 
             case 'bottom-center':
-                return (offsetX, offsetY, width, height, containerRef) => ({
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight) => ({
                     top: 0,
                     right: 0,
                     bottom: 0 - offsetY,
@@ -125,7 +128,7 @@ export const utils = {
                 })
 
             case 'right':
-                return (offsetX, offsetY, width, height, containerRef) => ({
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight) => ({
                     top: 0,
                     right: 0 - offsetX,
                     bottom: 0,
@@ -133,11 +136,11 @@ export const utils = {
                 })
 
             case 'left':
-                return (offsetX, offsetY, width, height, containerRef, options) => {
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
                     // safeOffset needed to prevent container from moving at min size, only needed for top and left.
                     const { minWidth } = options
 
-                    const maxOffsetX = width - minWidth
+                    const maxOffsetX = wrapperWidth - minWidth
                     const safeOffsetX = Math.min(offsetX, maxOffsetX)
 
                     return {
@@ -149,7 +152,10 @@ export const utils = {
                 }
 
             default:
-                return (width, height, movementX, movementY) => ({ width, height })
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => ({
+                    width,
+                    height,
+                })
         }
     },
     getOffsetAngle: (x, y, angle) => {
