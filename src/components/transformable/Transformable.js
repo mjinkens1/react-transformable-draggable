@@ -123,7 +123,6 @@ const TransformableCore = ({
 
     useEffect(() => {
         if (!initialized) {
-            console.log('INIT')
             React.Children.only(children)
 
             const childDimensions = {
