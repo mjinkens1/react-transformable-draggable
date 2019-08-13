@@ -245,15 +245,17 @@ const TransformableCore = ({
 
     const containerStyle = {
         border: '1px solid',
-        ...boundingBoxStyle,
+        border: hideBoundingBox ? 'none' : null,
+        ...(hideBoundingBox ? {} : boundingBoxStyle),
         ...resizeBounds,
         ...dragLayerBounds,
         minWidth,
         minHeight: getMinHeight(),
         maxWidth,
         maxHeight,
-        border: hideBoundingBox ? 'none' : null,
     }
+
+    console.log(containerStyle, boundingBoxStyle)
 
     const childContainerStyle = { transform: dragLayerChildTransform || childTransform }
 
