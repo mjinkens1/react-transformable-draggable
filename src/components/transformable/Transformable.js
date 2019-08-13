@@ -255,8 +255,6 @@ const TransformableCore = ({
         maxHeight,
     }
 
-    console.log(containerStyle, boundingBoxStyle)
-
     const childContainerStyle = { transform: dragLayerChildTransform || childTransform }
 
     return (
