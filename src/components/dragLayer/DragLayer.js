@@ -52,7 +52,7 @@ export const DragLayer = memo(({ children, id, initialPageScroll, providerRef })
         }
     }, [item, isDragging])
 
-    if (!dragItem || !isDragging || itemType === 'DROPPABLE_WRAPPER') {
+    if (!dragItem || itemType === 'DROPPABLE_WRAPPER') {
         return null
     }
 
