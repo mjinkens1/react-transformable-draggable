@@ -20,6 +20,7 @@ export const ApiLayer = ({
     rotateHandleStyle,
     rotateHandleStyleMobile,
     style,
+    type,
 }) => {
     return (
         <ApiContext.Provider
@@ -27,6 +28,7 @@ export const ApiLayer = ({
                 boundingBoxStyle,
                 boundingBoxStyleMobile,
                 className,
+                customType: type,
                 hideBoundingBox,
                 hideHandles,
                 initialPosition,

@@ -172,8 +172,8 @@ export const TransformableTarget = React.forwardRef(
                             )}
                             {/*/ Dropped-in chidren of component */}
                             {Object.entries(childTransformables).map(
-                                ([id, { renderItem, ...props }]) => (
-                                    <Transformable key={id} id={id} {...props}>
+                                ([id, { renderItem, customType, ...props }]) => (
+                                    <Transformable key={id} id={id} type={customType} {...props}>
                                         {renderItem}
                                     </Transformable>
                                 )

@@ -23,7 +23,8 @@ export const App = () => {
     const [deleteClassName, setDeleteClassName] = useState('app-delete-target')
     const [renderItems, setRenderItems] = useState([])
 
-    const onDelete = id => {
+    const onDelete = (id, type) => {
+        console.log('deleted type: ', type)
         const updatedRenderItems = renderItems.filter(item => item.id !== id)
 
         setRenderItems(updatedRenderItems)
@@ -42,7 +43,7 @@ export const App = () => {
             <DndProvider>
                 <TransformableTarget className="app-transformable-target">
                     {renderItems.map(({ id, renderItem }) => (
-                        <Transformable key={id} id={id}>
+                        <Transformable key={id} id={id} type="CLICK_TO_ADD">
                             {renderItem}
                         </Transformable>
                     ))}
@@ -56,7 +57,7 @@ export const App = () => {
                         <div className={deleteClassName}>DRAG HERE TO DELETE</div>
                     </DeleteTarget>
                     <div className="app-add-items">
-                        <Droppable>
+                        <Droppable type="DRAG_TO_ADD">
                             <div className="app-render-item">
                                 DRAG ME
                                 <img src={logo} className="app-logo" alt="logo" />

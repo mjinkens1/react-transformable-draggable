@@ -19,24 +19,24 @@ export const DeleteTarget = memo(
         } = useContext(DndContext)
         const hoverTimeout = useRef()
 
-        const [{ id, type }, drop] = useDrop({
+        const [{ id, type, customType }, drop] = useDrop({
             accept: ['TRANSFORMABLE_DRAGGABLE'],
-            collect: monitor => ({ id, type, ...monitor.getItem() }),
-            drop: ({ id, type }, monitor) => {
+            collect: monitor => ({ id, type, customType, ...monitor.getItem() }),
+            drop: ({ id, type, customType }, monitor) => {
                 const { [id]: idToDelete, ...remainingTranformables } = childTransformables
 
                 if (isMobile) {
-                    onHoverEnd && onHoverEnd(id, type)
+                    onHoverEnd && onHoverEnd(id, customType)
                     setIsHoveringDelete(false)
                 }
 
                 setChildTransformables(remainingTranformables)
 
-                onDelete && onDelete(id, type)
+                onDelete && onDelete(id, customType)
             },
             hover: (_, monitor) => {
                 if (isMobile) {
-                    onHoverStart && onHoverStart(id, type)
+                    onHoverStart && onHoverStart(id, customType)
                     setIsHoveringDelete(true)
                 } else {
                     if (hoverTimeout.current) {
@@ -59,9 +59,9 @@ export const DeleteTarget = memo(
 
         useEffect(() => {
             if (isHoveringDelete) {
-                onHoverStart && onHoverStart(id, type)
+                onHoverStart && onHoverStart(id, customType)
             } else {
-                onHoverEnd && onHoverEnd(id, type)
+                onHoverEnd && onHoverEnd(id, customType)
             }
         }, [isHoveringDelete])
 

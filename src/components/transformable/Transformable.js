@@ -45,6 +45,7 @@ const TransformableCore = ({
 }) => {
     const {
         className,
+        customType,
         boundingBoxStyle,
         boundingBoxStyleMobile,
         hideBoundingBox,
@@ -104,6 +105,7 @@ const TransformableCore = ({
         item: {
             id,
             type: 'TRANSFORMABLE_DRAGGABLE',
+            customType,
             wrapperParams,
             resizeDimensions,
             initialDimensions,
