@@ -66,6 +66,10 @@ export const DragLayer = memo(({ children, id, initialPageScroll, providerRef })
         wrapperParams,
     } = dragItem
 
+    if (!initialDimensions || !resizeDimensions || !wrapperParams) {
+        return null
+    }
+
     const { width: initialWidth, height: initialHeight } = initialDimensions
     const { width, height, ...resizeBounds } = resizeDimensions
 
