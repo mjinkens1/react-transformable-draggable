@@ -5,6 +5,8 @@ const jsRegex = /\.js?$/
 const jsModulesRegex = /(node_modules)/
 const sassRegex = /\.scss$/
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
 module.exports = {
     devtool: 'source-map',
     entry: './src/index.js',
