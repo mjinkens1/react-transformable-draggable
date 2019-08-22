@@ -5,8 +5,6 @@ const jsRegex = /\.js?$/
 const jsModulesRegex = /(node_modules)/
 const sassRegex = /\.scss$/
 
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
 module.exports = {
     devtool: 'source-map',
     entry: './src/index.js',
@@ -63,13 +61,6 @@ module.exports = {
             },
         ],
     },
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                sourceMap: true,
-            }),
-        ],
-    },
     output: {
         path: path.resolve('lib'),
         filename: 'index.js',
@@ -78,6 +69,7 @@ module.exports = {
         publicPath: '/lib/',
         umdNamedDefine: true,
     },
+    plugins: [new webpack.webpack.optimize.UglifyJsPlugin({ minimize: true })],
     resolve: {
         extensions: ['.js'],
     },
