@@ -8,31 +8,6 @@ const sassRegex = /\.scss$/
 module.exports = {
     devtool: 'source-map',
     entry: './src/index.js',
-    output: {
-        path: path.resolve('lib'),
-        filename: 'index.js',
-        library: 'react-transformable-draggable',
-        libraryTarget: 'umd',
-        publicPath: '/lib/',
-        umdNamedDefine: true,
-    },
-    module: {
-        rules: [
-            {
-                test: jsRegex,
-                exclude: jsModulesRegex,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                    },
-                ],
-            },
-            {
-                test: sassRegex,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
-            },
-        ],
-    },
     externals: {
         'lodash.throttle': {
             commonjs: 'lodash.throttle',
@@ -68,6 +43,38 @@ module.exports = {
             commonjs: 'react-dnd-touch-backend',
             commonjs2: 'react-dnd-touch-backend',
         },
+    },
+    module: {
+        rules: [
+            {
+                test: jsRegex,
+                exclude: jsModulesRegex,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                    },
+                ],
+            },
+            {
+                test: sassRegex,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+        ],
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                sourceMap: true,
+            }),
+        ],
+    },
+    output: {
+        path: path.resolve('lib'),
+        filename: 'index.js',
+        library: 'react-transformable-draggable',
+        libraryTarget: 'umd',
+        publicPath: '/lib/',
+        umdNamedDefine: true,
     },
     resolve: {
         extensions: ['.js'],
