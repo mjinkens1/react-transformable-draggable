@@ -6,6 +6,7 @@ const jsModulesRegex = /(node_modules)/
 const sassRegex = /\.scss$/
 
 module.exports = {
+    devtool: 'source-map',
     entry: './src/index.js',
     output: {
         path: path.resolve('lib'),
