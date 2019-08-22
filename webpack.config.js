@@ -64,7 +64,7 @@ module.exports = {
         ],
     },
     optimization: {
-        minimizer: [new UglifyJsPlugin({ minimize: true })],
+        minimizer: [new UglifyJsPlugin()],
     },
     output: {
         path: path.resolve('lib'),
