@@ -63,6 +63,9 @@ module.exports = {
             },
         ],
     },
+    optimization: {
+        minimizer: [new UglifyJsPlugin({ minimize: true })],
+    },
     output: {
         path: path.resolve('lib'),
         filename: 'index.js',
@@ -71,7 +74,6 @@ module.exports = {
         publicPath: '/lib/',
         umdNamedDefine: true,
     },
-    plugins: [new webpack.webpack.optimize.UglifyJsPlugin({ minimize: true })],
     resolve: {
         extensions: ['.js'],
     },
