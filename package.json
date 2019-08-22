@@ -34,6 +34,7 @@
         "react-dom": "^16.8.6",
         "sass-loader": "^7.1.0",
         "style-loader": "^0.23.1",
+        "uglifyjs-webpack-plugin": "^2.2.0",
         "webpack": "^4.39.1",
         "webpack-cli": "^3.3.6",
         "webpack-node-externals": "^1.7.2"
