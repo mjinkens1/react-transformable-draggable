@@ -1,7 +1,7 @@
 {
     "name": "react-transformable-draggable",
     "description": "A set of component wrappers to make any component or element draggable, droppable, and transformable.",
-    "version": "0.1.66",
+    "version": "0.1.65",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -12,7 +12,7 @@
         "build": "webpack --mode production",
         "build-dev": "rm -rf ./lib && webpack --mode development --watch",
         "prepublish": "rm -rf ./lib && npm run build",
-        "publish-lib": "npm run prepublish && webpack --mode development && npm version patch && npm publish"
+        "publish-lib": "npm run prepublish && webpack --mode production && npm version patch && npm publish"
     },
     "dependencies": {
         "lodash-uuid": "0.0.3",
@@ -34,7 +34,6 @@
         "react-dom": "^16.8.6",
         "sass-loader": "^7.1.0",
         "style-loader": "^0.23.1",
-        "uglifyjs-webpack-plugin": "^2.2.0",
         "webpack": "^4.39.1",
         "webpack-cli": "^3.3.6",
         "webpack-node-externals": "^1.7.2"

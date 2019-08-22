@@ -94,6 +94,10 @@ const TransformableCore = ({
     const getMinHeight = () => (lockAspectRatio ? minWidth / aspectRatio : minHeight)
 
     const getOpacity = (isDragging, isDragLayer) => {
+        console.log('IS DRAGGING', isDragging)
+        console.log('IS DRAG LAYER', isDragLayer)
+        console.log('INITIALIZED', initialized)
+
         if (isDragLayer) {
             return dragLayerIsDragging ? 1 : 0
         } else {
@@ -115,9 +119,14 @@ const TransformableCore = ({
             minWidth,
         },
         canDrag: !isResizing && !isRotating,
-        collect: monitor => ({ isDragging: monitor.isDragging() }),
+        collect: monitor => {
+            console.log('MONITOR', monitor.isDragging())
+            return { isDragging: monitor.isDragging() }
+        },
         options: { arePropsEqual: utils.isEqual },
     })
+
+    console.log('IS DRAGING FROM USE DRAG', isDragging)
 
     useEffect(() => {
         preview(getEmptyImage())
