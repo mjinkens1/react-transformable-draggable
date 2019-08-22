@@ -122,14 +122,14 @@ const TransformableCore = ({
         },
         canDrag: !isResizing && !isRotating,
         collect: monitor => {
-            console.log('MONITOR', monitor.isDragging())
+            console.log('MONITOR', monitor, monitor.isDragging())
             return { isDragging: monitor.isDragging() }
         },
         options: { arePropsEqual: utils.isEqual },
     })
 
     if (!isDragLayer) {
-        console.log('IS DRAGING FROM USE DRAG', isDragging)
+        console.log('IS DRAGGING FROM USE DRAG', isDragging)
     }
 
     useEffect(() => {
