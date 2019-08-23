@@ -93,14 +93,12 @@ const TransformableCore = ({
 
     const getMinHeight = () => (lockAspectRatio ? minWidth / aspectRatio : minHeight)
 
-    const getOpacity = (isDragging, isDragLayer) => {
-        setTimeout(() => {
-            if (isDragLayer) {
-                return dragLayerIsDragging ? 1 : 0
-            } else {
-                return isDragging || !initialized ? 0 : 1
-            }
-        }, 0)
+    const getOpacity = (isDragging, isDragLayer, dragLayerIsDragging, initialized) => {
+        if (isDragLayer) {
+            return dragLayerIsDragging ? 1 : 0
+        } else {
+            return isDragging || !initialized ? 0 : 1
+        }
     }
 
     const [{ isDragging }, drag, preview] = useDrag({
@@ -244,7 +242,7 @@ const TransformableCore = ({
         ...wrapperParams,
         transform: rotateTransform,
         ...dragLayerParams,
-        opacity: getOpacity(isDragging, isDragLayer),
+        opacity: getOpacity(isDragging, isDragLayer, dragLayerIsDragging, initialized),
         pointerEvents: isDragLayer ? 'none' : 'auto',
         zIndex,
     }
