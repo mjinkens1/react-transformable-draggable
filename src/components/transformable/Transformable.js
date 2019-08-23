@@ -94,11 +94,21 @@ const TransformableCore = ({
     const getMinHeight = () => (lockAspectRatio ? minWidth / aspectRatio : minHeight)
 
     const getOpacity = (isDragging, isDragLayer) => {
-        console.log(isDragging, isDragLayer, dragLayerIsDragging, initialized)
+        // console.log(isDragging, isDragLayer, dragLayerIsDragging, initialized)
         if (isDragLayer) {
-            return dragLayerIsDragging ? 1 : 0
+            if (dragLayerIsDragging) {
+                return 1
+            } else {
+                return 0
+            }
+            // return dragLayerIsDragging ? 1 : 0
         } else {
-            return isDragging || !initialized ? 0 : 1
+            if (isDragging || !initialized) {
+                return 0
+            } else {
+                return 1
+            }
+            // return isDragging || !initialized ? 0 : 1
         }
     }
 
