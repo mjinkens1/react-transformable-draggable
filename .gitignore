@@ -15,6 +15,7 @@
 
 # production
 /lib
+/example/build
 
 # misc
 .DS_Store
