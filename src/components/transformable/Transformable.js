@@ -34,6 +34,17 @@ const cursorPositionsAspectLocked = ['top-left', 'top-right', 'bottom-right', 'b
 
 const isMobile = utils.isMobile()
 
+const getOpacity = (isDragging, isDragLayer, dragLayerIsDragging, initialized) => {
+    if (isDragLayer) {
+        return dragLayerIsDragging ? 1 : 0
+    } else {
+        return isDragging || !initialized ? 0 : 1
+    }
+}
+
+const getMinHeight = (lockAspectRatio, aspectRatio, minWidth, minHeight) =>
+    lockAspectRatio ? minWidth / aspectRatio : minHeight
+
 const TransformableCore = ({
     children,
     dragLayerBounds,
@@ -91,18 +102,6 @@ const TransformableCore = ({
         setLastZIndex(nextZIndex)
     }, [lastZIndex, setLastZIndex])
 
-    const getMinHeight = () => (lockAspectRatio ? minWidth / aspectRatio : minHeight)
-
-    const getOpacity = (isDragging, isDragLayer) => {
-        console.log()
-
-        if (isDragLayer) {
-            return dragLayerIsDragging ? 1 : 0
-        } else {
-            return isDragging || !initialized ? 0 : 1
-        }
-    }
-
     const [{ isDragging }, drag, preview] = useDrag({
         item: {
             id,
@@ -113,7 +112,7 @@ const TransformableCore = ({
             initialDimensions,
             rotation,
             lockAspectRatio,
-            minHeight: getMinHeight(),
+            minHeight: getMinHeight(lockAspectRatio, aspectRatio, minWidth, minHeight),
             minWidth,
         },
         canDrag: !isResizing && !isRotating,
@@ -244,7 +243,7 @@ const TransformableCore = ({
         ...wrapperParams,
         transform: rotateTransform,
         ...dragLayerParams,
-        opacity: getOpacity(isDragging, isDragLayer),
+        opacity: getOpacity(isDragging, isDragLayer, dragLayerIsDragging, initialized),
         pointerEvents: isDragLayer ? 'none' : 'auto',
         zIndex,
     }
@@ -256,7 +255,7 @@ const TransformableCore = ({
         ...resizeBounds,
         ...dragLayerBounds,
         minWidth,
-        minHeight: getMinHeight(),
+        minHeight: getMinHeight(lockAspectRatio, aspectRatio, minWidth, minHeight),
         maxWidth,
         maxHeight,
     }
