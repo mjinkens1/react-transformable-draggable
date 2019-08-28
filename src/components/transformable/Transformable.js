@@ -186,20 +186,20 @@ const TransformableCore = ({
         }
     }, [id, dragUpdate, wrapperParams, setDragUpdate])
 
-    useEffect(() => {
-        const listenerCallback = throttle(() => {
-            const { width, height } = childRef.current.getBoundingClientRect()
-            const { width: wrapperWidth, height: wrapperHeight } = wrapperParams
+    // useEffect(() => {
+    //     const listenerCallback = throttle(() => {
+    //         const { width, height } = childRef.current.getBoundingClientRect()
+    //         const { width: wrapperWidth, height: wrapperHeight } = wrapperParams
 
-            if (width !== wrapperWidth || height !== wrapperHeight) {
-                setInitialized(false)
-            }
-        }, 50)
+    //         if (width !== wrapperWidth || height !== wrapperHeight) {
+    //             setInitialized(false)
+    //         }
+    //     }, 50)
 
-        window.addEventListener('resize', listenerCallback)
+    //     window.addEventListener('resize', listenerCallback)
 
-        return () => window.removeEventListener('resize', listenerCallback)
-    }, [wrapperParams])
+    //     return () => window.removeEventListener('resize', listenerCallback)
+    // }, [wrapperParams])
 
     useEffect(() => {
         const mobileCallback = event => {
