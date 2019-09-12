@@ -151,6 +151,21 @@ export const utils = {
                     }
                 }
 
+            case 'pinch':
+                return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => {
+                    // safeOffset needed to prevent container from moving at min size, only needed for top and left.
+                    const { aspectRatio, lockAspectRatio, minHeight, minWidth } = options
+
+                    const maxOffsetX = wrapperWidth - minWidth
+                    const safeOffsetX = Math.min(offsetX, maxOffsetX)
+                    return {
+                        top: safeOffsetX / aspectRatio / 2,
+                        right: safeOffsetX / 2,
+                        bottom: safeOffsetX / aspectRatio / 2,
+                        left: safeOffsetX / 2,
+                    }
+                }
+
             default:
                 return (offsetX, offsetY, wrapperWidth, wrapperHeight, options) => ({
                     width,
@@ -249,4 +264,8 @@ export const utils = {
     isEqual: (a, b) => isEqual(a, b),
     isMobile: () =>
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+
+    validateDimensions: dimensions => {
+        return Object.values(dimensions).every(value => !isNaN(value))
+    },
 }

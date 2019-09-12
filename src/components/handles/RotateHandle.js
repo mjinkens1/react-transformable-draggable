@@ -61,7 +61,7 @@ export const RotateHandle = memo(
         }, [clickCallback, containerRef])
 
         useEffect(() => {
-            const listenerCallback = () => {
+            const listenerCallback = event => {
                 if (!mouseDown) {
                     const {
                         top,
@@ -98,6 +98,9 @@ export const RotateHandle = memo(
         useEffect(() => {
             const listenerCallback = event => {
                 if (mouseDown) {
+                    // Stop event to prevent scrolling
+                    event.preventDefault()
+
                     const { pageX, pageY } = getPageCoordinates(event)
                     const { centerX, centerY } = centerCoords
 

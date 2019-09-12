@@ -68,6 +68,7 @@ const TransformableCore = ({
         minHeight,
         minWidth,
         style,
+        usePinchMobile,
     } = useContext(ApiContext)
 
     const {
@@ -80,6 +81,7 @@ const TransformableCore = ({
     } = useContext(TransformableContext)
 
     const [aspectRatio, setAspectRatio] = useState(INITIAL_ASPECT_RATIO)
+    const [dragDisabled, setDragDisabled] = useState(false)
     const [initialDimensions, setInitialDimensions] = useState(INITIAL_DIMENSIONS)
     const [isResizing, setIsResizing] = useState(false)
     const [isRotating, setIsRotating] = useState(false)
@@ -91,6 +93,17 @@ const TransformableCore = ({
 
     const containerRef = useRef()
     const childRef = useRef()
+    const initialPinch = useRef()
+    const currentPinchRatio = useRef()
+    const lastPinchRatio = useRef(1)
+
+    const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
+
+    const { width: initialWidth, height: initialHeight } = initialDimensions
+    const { width, height, ...resizeBounds } = resizeDimensions
+    const scaleX = width / initialWidth
+    const scaleY = height / initialHeight
+    const rotateTransform = `rotateZ(${rotation}deg)`
 
     const clickCallback = useCallback(() => {
         const nextZIndex = lastZIndex + 1
@@ -115,7 +128,7 @@ const TransformableCore = ({
             minHeight: getMinHeight(lockAspectRatio, aspectRatio, minWidth, minHeight),
             minWidth,
         },
-        canDrag: !isResizing && !isRotating,
+        canDrag: !isResizing && !isRotating && !dragDisabled,
         collect: monitor => {
             return { isDragging: monitor.isDragging() }
         },
@@ -186,20 +199,23 @@ const TransformableCore = ({
         }
     }, [id, dragUpdate, wrapperParams, setDragUpdate])
 
-    // useEffect(() => {
-    //     const listenerCallback = throttle(() => {
-    //         const { width, height } = childRef.current.getBoundingClientRect()
-    //         const { width: wrapperWidth, height: wrapperHeight } = wrapperParams
+    useEffect(() => {
+        const listenerCallback = event => {
+            const { touches } = event
 
-    //         if (width !== wrapperWidth || height !== wrapperHeight) {
-    //             setInitialized(false)
-    //         }
-    //     }, 50)
+            if (touches.length > 1) {
+                setDragDisabled(true)
+            } else {
+                setDragDisabled(false)
+            }
+        }
 
-    //     window.addEventListener('resize', listenerCallback)
+        document.body.addEventListener('touchstart', listenerCallback)
 
-    //     return () => window.removeEventListener('resize', listenerCallback)
-    // }, [wrapperParams])
+        return () => {
+            document.body.removeEventListener('touchstart', listenerCallback)
+        }
+    }, [])
 
     useEffect(() => {
         const mobileCallback = event => {
@@ -227,13 +243,152 @@ const TransformableCore = ({
         }
     }, [clickCallback, containerRef])
 
-    const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
+    useEffect(() => {
+        if (usePinchMobile || true) {
+            const childRefCurrent = childRef.current
 
-    const { width: initialWidth, height: initialHeight } = initialDimensions
-    const { width, height, ...resizeBounds } = resizeDimensions
-    const scaleX = width / initialWidth
-    const scaleY = height / initialHeight
-    const rotateTransform = `rotateZ(${rotation}deg)`
+            const listenerCallback = event => {
+                event.preventDefault()
+
+                const { touches } = event
+
+                const isTransformableChild = Object.values(touches).every(({ target }) => {
+                    return id === target.parentNode.id
+                })
+
+                if (touches.length !== 2 || !isTransformableChild) {
+                    return
+                }
+
+                const { 0: touch1, 1: touch2 } = touches
+
+                const { pageX: pageX1, pageY: pagePageY1 } = touch1
+                const { pageX: pageX2, pageY: pagePageY2 } = touch2
+
+                const deltaX = pageX2 - pageX1
+                const deltaY = pagePageY2 - pagePageY1
+
+                const pinchMagnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+
+                initialPinch.current = pinchMagnitude
+            }
+
+            childRefCurrent.addEventListener('touchstart', listenerCallback)
+
+            return () => {
+                childRefCurrent.removeEventListener('touchstart', listenerCallback)
+            }
+        }
+    }, [childRef, id, lastPinchRatio, usePinchMobile])
+
+    useEffect(() => {
+        if (usePinchMobile) {
+            const childRefCurrent = childRef.current
+
+            const listenerCallback = event => {
+                const { touches } = event
+
+                const isTransformableChild = Object.values(touches).every(({ target }) => {
+                    return id === target.parentNode.id
+                })
+
+                if (touches.length !== 2 || !isTransformableChild) {
+                    return
+                }
+
+                event.preventDefault()
+                setIsResizing(true)
+
+                const { 0: touch1, 1: touch2 } = touches
+
+                const { pageX: pageX1, pageY: pagePageY1 } = touch1
+                const { pageX: pageX2, pageY: pagePageY2 } = touch2
+
+                const deltaX = pageX2 - pageX1
+                const deltaY = pagePageY2 - pagePageY1
+
+                const pinchMagnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+                const pinchRatio = (pinchMagnitude / initialPinch.current) * lastPinchRatio.current
+
+                currentPinchRatio.current = pinchRatio
+
+                const { width, height } = containerRef.current.getBoundingClientRect()
+
+                const { adjustedWidth, adjustedHeight } = utils.getAngleAdjustedDimensions(
+                    width,
+                    height,
+                    rotation
+                )
+
+                const containerDeltaX = adjustedWidth * pinchRatio - adjustedWidth
+                const containerDeltaY = adjustedHeight * pinchRatio - adjustedHeight
+
+                const { width: wrapperWidth, height: wrapperHeight } = wrapperParams
+
+                const resizeFunction = utils.getResizeFunction('pinch')
+
+                const newResizeDimensions = resizeFunction(
+                    -containerDeltaX / 2,
+                    -containerDeltaY / 2,
+                    wrapperWidth,
+                    wrapperHeight,
+                    { aspectRatio, lockAspectRatio, minHeight, minWidth }
+                )
+
+                const dimensionsValid = utils.validateDimensions({
+                    ...newResizeDimensions,
+                    width: adjustedWidth,
+                    height: adjustedHeight,
+                })
+
+                const { innerWidth, innerHeight } = window
+
+                if (!dimensionsValid) {
+                    return
+                }
+                // Resize the element
+                setResizeDimensions({
+                    ...newResizeDimensions,
+                    width: adjustedWidth,
+                    height: adjustedHeight,
+                })
+            }
+
+            childRefCurrent.addEventListener('touchmove', listenerCallback)
+
+            return () => {
+                childRefCurrent.removeEventListener('touchmove', listenerCallback)
+            }
+        }
+    }, [
+        childRef,
+        containerRef,
+        currentPinchRatio,
+        initialPinch,
+        lastPinchRatio,
+        rotation,
+        setIsResizing,
+        usePinchMobile,
+    ])
+
+    useEffect(() => {
+        if (usePinchMobile) {
+            const childRefCurrent = childRef.current
+
+            const listenerCallback = event => {
+                event.preventDefault()
+                setIsResizing(false)
+
+                lastPinchRatio.current = currentPinchRatio.current
+            }
+
+            childRefCurrent.addEventListener('touchend', listenerCallback)
+
+            return () => {
+                childRefCurrent.removeEventListener('touchend', listenerCallback)
+            }
+        }
+    }, [childRef, currentPinchRatio, initialPinch, lastPinchRatio, setIsResizing, usePinchMobile])
 
     const childTransform = lockAspectRatio
         ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
@@ -278,30 +433,34 @@ const TransformableCore = ({
                         setRotation={setRotation}
                     />
                 )}
-                {cursors.map(cursorPosition => {
-                    const resizeFunction = utils.getResizeFunction(cursorPosition, lockAspectRatio)
-
-                    return (
-                        !hideHandles && (
-                            <ResizeHandle
-                                key={cursorPosition}
-                                aspectRatio={aspectRatio}
-                                clickCallback={clickCallback}
-                                containerRef={containerRef}
-                                isResizing={isResizing}
-                                position={cursorPosition}
-                                providerRef={providerRef}
-                                resizeDimensions={resizeDimensions}
-                                resizeFunction={resizeFunction}
-                                rotation={rotation}
-                                setIsResizing={setIsResizing}
-                                setResizeDimensions={setResizeDimensions}
-                                setWrapperParams={setWrapperParams}
-                                wrapperParams={wrapperParams}
-                            />
+                {!usePinchMobile &&
+                    cursors.map(cursorPosition => {
+                        const resizeFunction = utils.getResizeFunction(
+                            cursorPosition,
+                            lockAspectRatio
                         )
-                    )
-                })}
+
+                        return (
+                            !hideHandles && (
+                                <ResizeHandle
+                                    key={cursorPosition}
+                                    aspectRatio={aspectRatio}
+                                    clickCallback={clickCallback}
+                                    containerRef={containerRef}
+                                    isResizing={isResizing}
+                                    position={cursorPosition}
+                                    providerRef={providerRef}
+                                    resizeDimensions={resizeDimensions}
+                                    resizeFunction={resizeFunction}
+                                    rotation={rotation}
+                                    setIsResizing={setIsResizing}
+                                    setResizeDimensions={setResizeDimensions}
+                                    setWrapperParams={setWrapperParams}
+                                    wrapperParams={wrapperParams}
+                                />
+                            )
+                        )
+                    })}
                 <div className={`resize-container-child-wrapper ${className || ''}`} style={style}>
                     <div id={id} ref={childRef} style={childContainerStyle}>
                         {children}

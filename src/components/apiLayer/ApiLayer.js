@@ -21,6 +21,7 @@ export const ApiLayer = ({
     rotateHandleStyleMobile,
     style,
     type,
+    usePinchMobile,
 }) => {
     return (
         <ApiContext.Provider
@@ -42,6 +43,7 @@ export const ApiLayer = ({
                 rotateHandleStyle,
                 rotateHandleStyleMobile,
                 style,
+                usePinchMobile,
             }}
         >
             {children}
@@ -64,6 +66,7 @@ ApiLayer.defaultProps = {
     resizeHandleStyleMobile: undefined,
     rotateHandleStyle: undefined,
     rotateHandleStyleMobile: undefined,
+    usePinchMobile: false,
 }
 
 export const defaultProps = ApiLayer.defaultProps

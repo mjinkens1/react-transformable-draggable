@@ -105,6 +105,9 @@ export const ResizeHandle = memo(
         useEffect(() => {
             const listenerCallback = event => {
                 if (mouseDown && !isDragging) {
+                    // Stop event to prevent scrolling
+                    event.preventDefault()
+
                     // Calculate resize based on drag direction and magnitude
                     const { pageX, pageY } = getPageCoordinates(event)
 
