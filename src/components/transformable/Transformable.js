@@ -328,8 +328,8 @@ const TransformableCore = ({
                 const resizeFunction = utils.getResizeFunction('pinch')
 
                 const newResizeDimensions = resizeFunction(
-                    -containerDeltaX / 2,
-                    -containerDeltaY / 2,
+                    -containerDeltaX / pinchRatio,
+                    -containerDeltaY / pinchRatio,
                     wrapperWidth,
                     wrapperHeight,
                     { aspectRatio, lockAspectRatio, minHeight, minWidth }
