@@ -81,6 +81,7 @@ const TransformableCore = ({
     } = useContext(TransformableContext)
 
     const [aspectRatio, setAspectRatio] = useState(INITIAL_ASPECT_RATIO)
+    const [currentPinchRatio, setCurrentPinchRatio] = useState(1)
     const [dragDisabled, setDragDisabled] = useState(false)
     const [initialDimensions, setInitialDimensions] = useState(INITIAL_DIMENSIONS)
     const [isResizing, setIsResizing] = useState(false)
@@ -94,7 +95,6 @@ const TransformableCore = ({
     const containerRef = useRef()
     const childRef = useRef()
     const initialPinch = useRef()
-    const currentPinchRatio = useRef()
     const lastPinchRatio = useRef(1)
 
     const cursors = lockAspectRatio ? cursorPositionsAspectLocked : cursorPositions
@@ -244,8 +244,8 @@ const TransformableCore = ({
     }, [clickCallback, containerRef])
 
     useEffect(() => {
-        if (usePinchMobile || true) {
-            const childRefCurrent = childRef.current
+        if (usePinchMobile) {
+            const containerRefCurrent = containerRef.current
 
             const listenerCallback = event => {
                 event.preventDefault()
@@ -262,28 +262,28 @@ const TransformableCore = ({
 
                 const { 0: touch1, 1: touch2 } = touches
 
-                const { pageX: pageX1, pageY: pagePageY1 } = touch1
-                const { pageX: pageX2, pageY: pagePageY2 } = touch2
+                const { pageX: pageX1, pageY: pageY1 } = touch1
+                const { pageX: pageX2, pageY: pageY2 } = touch2
 
                 const deltaX = pageX2 - pageX1
-                const deltaY = pagePageY2 - pagePageY1
+                const deltaY = pageY2 - pageY1
 
                 const pinchMagnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
 
                 initialPinch.current = pinchMagnitude
             }
 
-            childRefCurrent.addEventListener('touchstart', listenerCallback)
+            containerRefCurrent.addEventListener('touchstart', listenerCallback)
 
             return () => {
-                childRefCurrent.removeEventListener('touchstart', listenerCallback)
+                containerRefCurrent.removeEventListener('touchstart', listenerCallback)
             }
         }
-    }, [childRef, id, lastPinchRatio, usePinchMobile])
+    }, [containerRef, id, lastPinchRatio, usePinchMobile])
 
     useEffect(() => {
         if (usePinchMobile) {
-            const childRefCurrent = childRef.current
+            const containerRefCurrent = containerRef.current
 
             const listenerCallback = event => {
                 const { touches } = event
@@ -301,16 +301,16 @@ const TransformableCore = ({
 
                 const { 0: touch1, 1: touch2 } = touches
 
-                const { pageX: pageX1, pageY: pagePageY1 } = touch1
-                const { pageX: pageX2, pageY: pagePageY2 } = touch2
+                const { pageX: pageX1, pageY: pageY1 } = touch1
+                const { pageX: pageX2, pageY: pageY2 } = touch2
 
                 const deltaX = pageX2 - pageX1
-                const deltaY = pagePageY2 - pagePageY1
+                const deltaY = pageY2 - pageY1
 
                 const pinchMagnitude = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
                 const pinchRatio = (pinchMagnitude / initialPinch.current) * lastPinchRatio.current
 
-                currentPinchRatio.current = pinchRatio
+                setCurrentPinchRatio(pinchRatio)
 
                 const { width, height } = containerRef.current.getBoundingClientRect()
 
@@ -341,8 +341,6 @@ const TransformableCore = ({
                     height: adjustedHeight,
                 })
 
-                const { innerWidth, innerHeight } = window
-
                 if (!dimensionsValid) {
                     return
                 }
@@ -354,14 +352,14 @@ const TransformableCore = ({
                 })
             }
 
-            childRefCurrent.addEventListener('touchmove', listenerCallback)
+            containerRefCurrent.addEventListener('touchmove', listenerCallback)
 
             return () => {
-                childRefCurrent.removeEventListener('touchmove', listenerCallback)
+                containerRefCurrent.removeEventListener('touchmove', listenerCallback)
             }
         }
     }, [
-        childRef,
+        containerRef,
         containerRef,
         currentPinchRatio,
         initialPinch,
@@ -373,26 +371,34 @@ const TransformableCore = ({
 
     useEffect(() => {
         if (usePinchMobile) {
-            const childRefCurrent = childRef.current
+            const containerRefCurrent = containerRef.current
 
             const listenerCallback = event => {
                 event.preventDefault()
                 setIsResizing(false)
 
-                lastPinchRatio.current = currentPinchRatio.current
+                lastPinchRatio.current = currentPinchRatio
             }
 
-            childRefCurrent.addEventListener('touchend', listenerCallback)
+            containerRefCurrent.addEventListener('touchend', listenerCallback)
 
             return () => {
-                childRefCurrent.removeEventListener('touchend', listenerCallback)
+                containerRefCurrent.removeEventListener('touchend', listenerCallback)
             }
         }
-    }, [childRef, currentPinchRatio, initialPinch, lastPinchRatio, setIsResizing, usePinchMobile])
+    }, [
+        containerRef,
+        currentPinchRatio,
+        initialPinch,
+        lastPinchRatio,
+        setIsResizing,
+        usePinchMobile,
+    ])
 
-    const childTransform = lockAspectRatio
-        ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
-        : `scale(${scaleX}, ${scaleY})`
+    const childTransform =
+        lockAspectRatio || usePinchMobile
+            ? `scale(${Math.max(width / initialWidth, height / initialHeight)})`
+            : `scale(${scaleX}, ${scaleY})`
 
     const wrapperStyle = {
         ...wrapperParams,
