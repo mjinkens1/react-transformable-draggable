@@ -78,7 +78,7 @@ module.exports = {
         extensions: ['.js'],
     },
     plugins: [
-        new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin({ analyzerMode: 'static' }),
         new CleanWebpackPlugin(),
         new CircularDependencyPlugin({
             exclude: /node_modules/,
