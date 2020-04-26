@@ -5,7 +5,13 @@ const jsRegex = /\.js?$/
 const jsModulesRegex = /(node_modules)/
 const sassRegex = /\.scss$/
 
+// Plugins
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CircularDependencyPlugin = require('circular-dependency-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
 module.exports = {
+    mode: 'production',
     entry: './src/index.js',
     externals: {
         'lodash.throttle': {
@@ -71,4 +77,15 @@ module.exports = {
     resolve: {
         extensions: ['.js'],
     },
+    plugins: [
+        new BundleAnalyzerPlugin(),
+        new CleanWebpackPlugin(),
+        new CircularDependencyPlugin({
+            exclude: /node_modules/,
+            include: /lib/,
+            failOnError: true,
+            allowAsyncCycles: false,
+            cwd: process.cwd(),
+        }),
+    ],
 }
