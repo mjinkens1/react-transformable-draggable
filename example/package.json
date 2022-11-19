@@ -9,7 +9,7 @@
         "react-dnd-html5-backend": "^9.3.2",
         "react-dnd-touch-backend": "^9.3.3",
         "react-fast-compare": "^2.0.4",
-        "react-scripts": "3.0.1",
+        "react-scripts": "5.0.1",
         "react-transformable-draggable": "file:../"
     },
     "scripts": {
